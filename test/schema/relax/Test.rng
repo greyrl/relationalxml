@@ -1,0 +1,75 @@
+<grammar xmlns="http://relaxng.org/ns/structure/1.0"
+        datatypeLibrary="http://www.w3.org/2001/XMLSchema-datatypes">
+    <define name="address">
+        <element name="address">
+            <optional>
+                <attribute name="id"><data type="integer"/></attribute>
+            </optional>
+            <attribute name="type">
+                <choice>
+                    <value>home</value>
+                    <value>work</value>
+                </choice>
+            </attribute>
+            <oneOrMore>
+                <element name="street"><text/></element>
+            </oneOrMore>
+            <element name="city"><text/></element>
+            <element name="state"><text/></element>
+            <element name="zip-code"><data type="integer"/></element>
+            <optional>
+                <element name="region"><text/></element>
+                <element name="region"><text/></element>
+            </optional>
+        </element>
+    </define>
+
+    <define name="status">
+        <element name="status">
+            <choice>
+                <value>new</value>
+                <value>reviewed</value>
+            </choice>
+        </element>
+    </define> 
+
+    <define name="statistics">
+        <element name="statistics">
+            <attribute name="accessed"><data type="integer"/></attribute>
+            <attribute name="size"><data type="long"/></attribute>
+        </element>
+    </define> 
+
+    <start>
+        <element name="address-book">
+            <optional>
+                <attribute name="address-count"/>
+            </optional>
+            <element name="name">
+                <data type="string">
+                    <param name="maxLength">100</param>
+                </data>
+            </element>
+            <optional>
+                <element name="email"><text/></element>
+            </optional>
+            <optional>
+                <element name="enabled"><empty/></element>
+            </optional>
+            <zeroOrMore>
+                <ref name="address"/>
+            </zeroOrMore>
+            <optional>
+                <ref name="status"/>
+            </optional>
+            <ref name="statistics"/>
+            <externalRef href="Favorite.rng"/>
+            <externalRef href="Favorite.rng"/>
+            <optional>
+                <element name="remover">
+                    <element name="title"><text/></element>
+                </element>
+            </optional>
+        </element>
+    </start>
+</grammar>

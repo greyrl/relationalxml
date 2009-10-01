@@ -1,0 +1,12 @@
+<address-book>
+    <name>robs address book</name>
+    <email>rgrey@chi.ucsf.edu</email>
+    <enabled/>
+    <address type="home">
+        <street>1382 5th Ave</street>
+        <city>San Francisco</city>
+        <state>CA</state>
+        <zip-code>94122</zip-code>
+    </address>
+    <status>new</status>
+</address-book>

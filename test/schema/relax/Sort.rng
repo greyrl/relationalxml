@@ -1,0 +1,6 @@
+<element name="sort" xmlns="http://relaxng.org/ns/structure/1.0"
+        datatypeLibrary="http://www.w3.org/2001/XMLSchema-datatypes">
+    <element name="sort1"><text/></element>
+    <element name="sort2"><text/></element>
+    <optional><externalRef href="SortChild.rng"/></optional>
+</element>

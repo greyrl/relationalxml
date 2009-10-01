@@ -1,0 +1,37 @@
+<grammar xmlns="http://relaxng.org/ns/structure/1.0"
+        datatypeLibrary="http://www.w3.org/2001/XMLSchema-datatypes">
+    <define name="kid-one">
+        <element name="kid-one">
+            <element name="title"><text/></element>
+        </element>
+    </define> 
+
+    <define name="kid-two">
+        <element name="kid-two">
+            <element name="title"><text/></element>
+        </element>
+    </define> 
+
+    <define name="kid-three">
+        <element name="kid-three">
+            <element name="title"><text/></element>
+        </element>
+    </define> 
+
+    <start>
+        <element name="mixed-kids">
+            <element name="title"><text/></element>
+            <interleave>
+                <zeroOrMore>
+                    <ref name="kid-one"/>
+                </zeroOrMore>
+                <zeroOrMore>
+                    <ref name="kid-two"/>
+                </zeroOrMore>
+            </interleave>
+            <zeroOrMore>
+                <ref name="kid-three"/>
+            </zeroOrMore>
+        </element>
+    </start>
+</grammar>
