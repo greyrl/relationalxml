@@ -1,0 +1,35 @@
+<!-- sample query file for the persistence loader -->
+<queries>
+    <query id="query.all.entries" sql="from AddressBook"/>
+    <query id="query.by.id" sql="from AddressBook where id = ?">
+        <param type="java.lang.Long"/>
+    </query>
+    <query id="query.multi.by.id" sql="from MixedKids where id = ?">
+        <param type="java.lang.Long"/>
+    </query>
+    <query id="query.fav.by.id" sql="from Favorite where id = ?">
+        <param type="java.lang.Long"/>
+    </query>
+    <query id="query.stats.by.id" sql="from Statistics where id = ?">
+        <param type="java.lang.Long"/>
+    </query>
+    <query id="query.lone.by.id" sql="from Levelone where id = ?">
+        <param type="java.lang.Long"/>
+    </query>
+    <query id="query.lthree.by.id" sql="from Levelthree where id = ?">
+        <param type="java.lang.Long"/>
+    </query>
+    <query id="query.native.by.id" native="AddressBook">
+        <sql>
+            select {address_book.*} from address_book where id = ?
+        </sql>
+        <param type="java.lang.Long"/>
+    </query>
+    <query id="query.multiple">
+        <sql>
+            from AddressBook where id = ? or id in (:ids) 
+        </sql>
+        <param type="java.lang.Long"/>
+        <param type="java.lang.Long" name="ids"/>
+    </query>
+</queries>

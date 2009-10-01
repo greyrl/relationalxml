@@ -1,0 +1,639 @@
+<!-- Included ant script to generate the build configuration -->
+<project name="build.core.import" basedir="../">
+
+    <property environment="env"/>
+
+    <!-- ==================== BASIC TARGETS ==================== -->
+
+    <!-- library path build -->
+    <target name="build.path">
+        <fail unless="lib.dir">You must define variable "lib.dir"</fail>
+        <condition property="library.pattern.check">
+            <isreference refid="library.pattern"/>
+        </condition>
+        <fail unless="library.pattern.check">You must define patternset "library.pattern"</fail>
+
+        <!-- the standard build classpath -->
+        <path id="build.classpath">
+            <pathelement location="${build.dir}/classes"/>
+            <fileset dir="${lib.dir}">
+                <patternset refid="library.pattern"/>
+            </fileset>
+        </path>
+    </target>
+
+    <!-- build the java for custom tasks -->
+    <target name="build.custom.task.java" depends="build.path">
+        <fail unless="custom.dir">You must define variable "custom.dir"</fail>
+        <mkdir dir="${build.dir}/classes"/>
+        <javac deprecation="true" destdir="${build.dir}/classes">
+           <src path="${src.dir}"/>
+           <classpath refid="build.classpath"/>
+           <include name="${custom.dir}"/>
+        </javac>
+    </target>
+
+    <!-- define some custom tasks -->
+    <target name="define.custom.tasks" depends="build.path">
+        <taskdef name="request-prop" classpathref="build.classpath"
+            classname="org.chi.util.ant.RequestProperty" /> 
+    </target>
+
+    <!-- if defined, set the custom etc directory property -->
+    <target name="build.etc.var">
+        <fail unless="etc.dir">You must define variable "etc.dir"</fail>
+
+        <condition property="custom.etc.dir" value="${etc.dir}/${env.CHIENV}">
+            <available file="${etc.dir}/${env.CHIENV}" type="dir"/>
+        </condition>
+    </target>
+
+    <!-- library path build with etc dir -->
+    <target name="build.etc.path" depends="build.path,build.etc.var">
+        <!-- the build classpath with the etc dir -->
+        <path id="build.etc.classpath">
+            <pathelement location="${build.dir}/classes"/>
+            <pathelement location="${custom.etc.dir}"/>
+            <pathelement location="${etc.dir}"/>
+            <fileset dir="${lib.dir}">
+                <patternset refid="library.pattern"/>
+            </fileset>
+            <!-- these need to be linked for log4j to function -->
+            <pathelement location="${lib.dir}/xerces/serializer-2.7.0.jar"/>
+            <pathelement location="${lib.dir}/xerces/xerces-2.6.2.jar"/>
+            <pathelement location="${lib.dir}/xalan/xalan-2.7.0.jar"/>
+        </path>
+    </target>
+
+    <!-- sanity check and prepare for compile -->
+    <target name="compile.prep" depends="define.custom.tasks">
+        <fail unless="src.dir">You must define variable "src.dir"</fail>
+        <fail unless="build.dir">You must define variable "build.dir"</fail>
+    </target>
+
+    <!-- compile the module -->
+    <target name="compile" depends="compile.prep">
+        <mkdir dir="${build.dir}/classes"/>
+        <javac deprecation="true" destdir="${build.dir}/classes">
+           <src path="${src.dir}"/>
+           <classpath refid="build.classpath"/>
+        </javac>
+    </target>
+
+    <!-- generate the javadocs -->
+    <target name="javadoc" depends="compile">
+        <fail unless="name">You must define variable "name"</fail>
+        <fail unless="doc.dir">You must define variable "doc.dir"</fail>
+        <javadoc packagenames="*"
+                sourcepath="${src.dir}"
+                classpathref="build.classpath"
+                destdir="${doc.dir}/javadocs"
+                author="true"
+                version="true"
+                use="true"
+                windowtitle="${name} API">
+            <doctitle><![CDATA[<h1>${name} JavaDocs</h1>]]></doctitle>
+            <bottom><![CDATA[<i>Copyright &#169; Center for HIV Information</i>]]></bottom>
+            <arg value="-notimestamp"/>
+        </javadoc>
+    </target>
+
+    <!-- jar the module -->
+    <target name="jar" depends="compile">
+        <fail unless="lib.name">You must define variable "lib.name"</fail>
+        <mkdir dir="${build.dir}/lib"/>
+        <jar jarfile="${build.dir}/lib/${lib.name}">
+            <fileset dir="${build.dir}/classes" includes="**/*.class"/>
+        </jar>
+    </target>
+
+    <!-- update the module with extra configuration -->
+    <target name="jar.etc" depends="jar">
+        <jar update="true" jarfile="${build.dir}/lib/${lib.name}">
+            <fileset dir="${etc.dir}" includes="*"/>
+        </jar>
+        <antcall target="jar.etc.env"/>
+    </target>
+
+    <!-- update the module with the source files -->
+    <target name="jar.src" depends="jar">
+        <jar update="true" jarfile="${build.dir}/lib/${lib.name}">
+            <fileset dir="${src.dir}" includes="**/*.java"/>
+        </jar>
+    </target>
+
+    <!-- update the module with extra configuration for a specific environment -->
+    <target name="jar.etc.env" depends="build.etc.var" if="custom.etc.dir">
+        <echo>Updating ${build.dir}/lib/${lib.name} from ${custom.etc.dir}</echo>
+        <!-- force the files to be added -->
+        <touch>
+            <fileset dir="${custom.etc.dir}" includes="*"/>
+        </touch>
+        <jar update="true" jarfile="${build.dir}/lib/${lib.name}">
+            <fileset dir="${custom.etc.dir}" includes="*"/>
+        </jar>
+    </target>
+
+    <!-- test the module, do not call this directly -->
+    <target name="run.tests" depends="compile">
+        <fail unless="test.dir">You must define variable "test.dir"</fail>
+        <fail unless="test.reports">You must define variable "test.reports"</fail>
+        <condition property="check.path">
+            <isreference refid="test.classpath"/>
+        </condition>
+        <fail unless="check.path">You must define "test.classpath"</fail>
+        <mkdir dir="${test.reports}"/>
+        <!-- compile the tests -->
+        <javac destdir="${build.dir}/classes">
+           <src path="${test.dir}"/>
+           <classpath refid="test.classpath"/>
+        </javac>
+        <!-- run the tests -->
+        <junit printsummary="yes" haltonfailure="yes">
+            <sysproperty key="basedir" value="${basedir}"/>
+            <classpath refid="test.classpath"/>
+            <formatter type="plain"/>
+            <batchtest fork="yes" todir="${test.reports}">
+                <fileset dir="${build.dir}/classes">
+                    <include name="**/*Test.class"/>
+                </fileset>
+            </batchtest>
+        </junit>
+    </target>
+
+    <!-- test the module with etc include-->
+    <target name="test.etc" depends="build.etc.path">
+        <!-- use the appropriate classpath-->
+        <path id="test.classpath">
+            <path refid="build.etc.classpath"/>
+        </path>
+        <antcall target="run.tests" inheritRefs="true"/>
+    </target>
+
+    <!-- test the module without etc include-->
+    <target name="test" depends="build.path">
+        <!-- use the appropriate classpath-->
+        <path id="test.classpath">
+            <path refid="build.classpath"/>
+        </path>
+        <antcall target="run.tests" inheritRefs="true"/>
+    </target>
+
+    <!-- choose a test to run -->
+    <target name="ctest" depends="compile, build.etc.path">
+        <taskdef name="choosetest"
+                classname="org.chi.util.ant.ChooseTestTask">
+            <classpath refid="build.classpath"/>
+        </taskdef>
+        <choosetest var="chosenTestVar">
+            <fileset dir="${build.dir}/classes">
+                <include name="**/*Test.class"/>
+            </fileset>
+        </choosetest>
+        <junit showoutput="true" haltonfailure="true" printsummary="true">
+            <classpath refid="build.etc.classpath"/>
+            <formatter type="plain"/>
+            <test fork="yes" todir="${test.reports}" name="${chosenTestVar}"/>
+        </junit>
+    </target>
+
+    <!-- choose an individual test to run -->
+    <target name="citest" depends="compile, build.etc.path">
+        <taskdef name="choosetest"
+                classname="org.chi.util.ant.ChooseIndTestTask">
+            <classpath refid="build.classpath"/>
+        </taskdef>
+        <taskdef name="runtest"
+                classname="org.chi.util.ant.RunIndTestTask">
+            <classpath refid="build.classpath"/>
+        </taskdef>
+        <choosetest var="chosenTestVar" ivar="choseIndTestVar">
+            <fileset dir="${build.dir}/classes">
+                <include name="**/*Test.class"/>
+            </fileset>
+        </choosetest>
+        <runtest class="${chosenTestVar}" test="${choseIndTestVar}"
+                stacktrace="true">
+            <classpath refid="build.etc.classpath"/>
+        </runtest>
+    </target>
+
+    <!-- clean all the build artifacts -->
+    <target name="clean" depends="compile.prep">
+        <echo message="cleaning class files..."/>
+        <delete>
+            <fileset dir="${build.dir}/classes" includes="**/*.class"/>
+        </delete>
+        <!-- delete a jar if it exists -->
+        <delete file="${build.dir}/lib/${lib.name}"/>
+    </target>
+
+    <!-- touch the reindex file -->
+    <target name="reindex">
+        <fail unless="index.dir">You must define variable "index.dir"</fail>
+        <mkdir dir="${index.dir}"/>
+        <touch file="${index.dir}/.reindex"/>
+    </target>
+
+    <!-- tail the log4j log -->
+    <target name="tail">
+        <fail unless="lib.dir">You must define variable "lib.dir"</fail>
+        <fail unless="log.file">You must define variable "log.file"</fail>
+        <fail message="No log to tail">
+            <condition>
+                <not><available file="${log.file}" type="file"/></not>
+            </condition>
+        </fail>
+        <exec executable="${lib.dir}/tools/tail.exe">
+            <arg line="${tail.param} ${log.file}"/>
+        </exec>
+    </target>
+
+    <!-- recursively validate XML in a directory -->
+    <target name="validate.xml" depends="build.etc.path">
+        <fail unless="xml.check.dir">You must define variable "xml.check.dir"</fail>
+        <java classname="org.chi.util.CheckXML" failonerror="true">
+            <classpath refid="build.etc.classpath"/>
+            <arg value="${xml.check.dir}"/>
+        </java>
+    </target>
+
+    <!-- recursively replace content in XML files -->
+    <target name="replace.in.xml" depends="build.etc.path, define.custom.tasks">
+        <fail unless="xml.check.dir">You must define variable "xml.check.dir"</fail>
+        <request-prop name="original" message="Please enter value to be replaced"/>
+        <request-prop name="replacement" message="Please enter replacement"/>
+        <java classname="org.chi.util.ReplaceContent" failonerror="true">
+            <classpath refid="build.etc.classpath"/>
+            <arg value="${original}"/>
+            <arg value="${replacement}"/>
+            <arg value=".xml"/>
+            <arg value="${xml.check.dir}"/>
+        </java>
+    </target>
+
+    <!-- display lucene index information -->
+    <target name="list.lucene.fields" depends="build.etc.path">
+        <fail unless="index.dir">You must define variable "index.dir"</fail>
+        <java classname="org.chi.search.util.ListLuceneFields" failonerror="true">
+            <classpath refid="build.etc.classpath"/>
+            <arg value="${index.dir}"/>
+        </java>
+    </target>
+
+    <!-- match patterns in files -->
+    <target name="match.pattern.in.files" depends="define.custom.tasks">
+        <fail unless="pattern.list.file"
+            >You must define variable "pattern.list.file"</fail>
+        <fail unless="web.dir">You must define variable "web.dir"</fail>
+        <taskdef name="find-in-files" classpathref="build.classpath" 
+            classname="org.chi.util.FindInFiles"/>
+        <request-prop name="extension" 
+            message="Please enter the extension for the search files"/>
+        <find-in-files patternFile="${pattern.list.file}" 
+            extension="${extension}" workingDir="${web.dir}" />
+    </target>
+
+    <!-- ==================== WEB TARGETS ====================== -->
+
+    <!-- install the jar files into the WEB-INF directory -->
+    <target name="install.war.libs" depends="jar">
+        <fail unless="web.dir">You must define variable "web.dir"</fail>
+        <mkdir dir="${web.dir}/WEB-INF/lib"/>
+        <copy todir="${web.dir}/WEB-INF/lib" flatten="true">
+            <fileset dir="${lib.dir}">
+                 <patternset refid="library.pattern"/>
+            </fileset>
+        </copy>
+        <copy file="${build.dir}/lib/${lib.name}" 
+            todir="${web.dir}/WEB-INF/lib"/>
+    </target>
+
+    <!-- cleanup the jars that are supplied by the system -->
+    <target name="clean.system.wars">
+        <fail unless="web.dir">You must define variable "web.dir"</fail>
+        <echo message="removing system libraries..."/>
+        <delete>
+            <fileset dir="${web.dir}/WEB-INF/lib">
+                <patternset refid="system.pattern"/>
+            </fileset>
+        </delete>
+    </target>
+
+    <!-- cleanup the web libraries -->
+    <target name="clean.web" depends="clean">
+        <fail unless="web.dir">You must define variable "web.dir"</fail>
+        <echo message="cleaning libraries..."/>
+        <delete>
+            <fileset dir="${web.dir}/WEB-INF/lib" includes="*.jar"/>
+        </delete>
+    </target>
+
+    <!-- touch web.xml -->
+    <target name="touch.web.xml">
+        <fail unless="web.dir">You must define variable "web.dir"</fail>
+        <touch file="${web.dir}/WEB-INF/web.xml"/>
+    </target>
+
+    <!-- crawl web links -->
+    <target name="generate.web.links" depends="build.etc.path, compile">
+        <fail unless="log.dir">You must define variable "log.dir"</fail>
+        <taskdef name="linkcrawler" classpathref="build.etc.classpath"
+            classname="org.chi.util.ant.UrlGenerator"/>
+        <linkcrawler root="http://localhost:8080" 
+            result="${log.dir}/link.results.txt" 
+            external="${log.dir}/link.external.txt" 
+            error="${log.dir}/link.error.txt"/>
+    </target>
+
+    <!-- ==================== DATABASE TARGETS ================= -->
+
+    <!-- check to see if the derby database exists already -->
+    <target name="check.derby.db">
+        <fail unless="db.dir">You must define variable "db.dir"</fail>
+        <available file="${db.dir}" type="dir" property="derby.exists"/>
+    </target>
+
+    <!-- build a derby database from a script -->
+    <target name="build.derby.db" depends="define.custom.tasks"> 
+        <fail unless="sql.file">You must define variable "sql.file"</fail>
+        <sql driver="org.apache.derby.jdbc.EmbeddedDriver" src="${sql.file}"
+            url="jdbc:derby:${db.dir};create=true"
+            userid="" password="" classpathref="build.classpath"/>
+    </target>
+
+    <!-- close a derby database from a script -->
+    <target name="close.derby.db" depends="build.etc.path,define.custom.tasks">
+        <taskdef name="disconnect" 
+                classname="org.chi.db.DerbyDisconnectTask">
+            <classpath refid="build.etc.classpath"/>
+        </taskdef>
+        <disconnect db="${db.dir}"/>
+    </target>
+
+    <!-- delete the existing derby database -->
+    <target name="delete.derby.db" depends="check.derby.db" if="derby.exists">
+        <delete includeemptydirs="true">
+            <fileset dir="${db.dir}" includes="**/*"/>
+            <fileset dir="${db.dir}"/>
+        </delete>
+    </target>
+
+    <!-- extract data from a database into an SQL file -->
+    <target name="extract.sql.data" depends="build.etc.path">
+        <fail unless="extract.driver">You must define variable "extract.driver"</fail>
+        <fail unless="extract.url">You must define variable "extract.url"</fail>
+        <fail unless="extract.user">You must define variable "extract.user"</fail>
+        <fail unless="extract.pass">You must define variable "extract.pass"</fail>
+        <fail unless="extract.file">You must define variable "extract.file"</fail>
+        <taskdef name="extract-data" classpathref="build.classpath"
+            classname="org.chi.db.ExtractDbData" /> 
+        <extract-data driver="${extract.driver}" url="${extract.url}" 
+            username="${extract.user}" password="${extract.pass}" 
+            schema="${extract.schema}" file="${extract.file}" 
+            skipcolumns="${extract.skip.columns}"/>
+    </target>
+
+    <!-- extract data from a database into an SQL file -->
+    <target name="copy.database" depends="build.etc.path">
+        <fail unless="copy.db.from">You must define variable "copy.db.from"</fail>
+        <fail unless="copy.db.to">You must define variable "copy.db.to"</fail>
+        <taskdef name="copy-data" classpathref="build.classpath"
+            classname="org.chi.db.CopyDbData" />
+        <copy-data from="${copy.db.from}" to="${copy.db.to}" 
+            skiptables="${copy.skip.tables}"/>
+    </target>
+
+    <!-- run sql remote to transfer transactions -->
+    <target name="run.sql.remote">
+        <fail unless="remote.db.name"
+            >You must define variable "remote.db.name"</fail>
+        <property name="sybase.home" value="/opt/sqlanywhere10"/>
+        <exec executable="${sybase.home}/bin64/dbremote" failonerror="true">
+            <env key="LD_LIBRARY_PATH" path="${sybase.home}/lib64"/>
+            <arg line="-c 'dbn=${remote.db.name};uid=dba;pwd=insite' -s -b"/>
+            <arg line=" /chi/sybase/tlog/${remote.db.name}"/>
+        </exec>
+    </target>
+
+    <!-- install javascript libraries -->
+    <target name="install.js">
+        <condition property="script.pattern.check">
+            <isreference refid="script.pattern"/>
+        </condition>
+        <fail unless="script.pattern.check"
+            >You must define patternset "script.pattern"</fail>
+        <mkdir dir="${web.dir}/script"/>
+        <copy todir="${web.dir}/script" verbose="true">
+            <fileset dir="${lib.dir}">
+                 <patternset refid="script.pattern"/>
+            </fileset>
+        </copy>
+    </target>
+
+    <!-- ==================== HIBERNATE TARGETS ================ -->
+
+    <target name="define.hibernate.tool" depends="build.etc.path,compile">
+        <fail unless="hibernate.cfg">You must define variable "hibernate.cfg"</fail>
+        <taskdef name="hibernatetool"
+                classname="org.hibernate.tool.ant.HibernateToolTask">
+            <classpath refid="build.etc.classpath"/>
+        </taskdef>
+        <condition property="hib.cfg.full" value="${custom.etc.dir}/${hibernate.cfg}"
+                else="${etc.dir}/${hibernate.cfg}">
+            <isset property="custom.etc.dir"/>
+        </condition>
+        <echo>using hibernate config [${hib.cfg.full}]</echo>
+    </target>
+
+    <!-- generate hibernate SQL files -->
+    <target name="gen.schema" depends="define.hibernate.tool">
+        <echo>generating sql ${etc.dir}/hibernate.sql</echo>
+        <hibernatetool destdir="${etc.dir}">
+            <annotationconfiguration configurationfile="${hib.cfg.full}"/>
+            <hbm2ddl export="false" outputfilename="hibernate.sql"/>
+        </hibernatetool>
+    </target>
+
+    <!-- update database schema -->
+    <target name="upd.schema" depends="define.hibernate.tool">
+        <hibernatetool destdir="${etc.dir}">
+            <annotationconfiguration configurationfile="${hib.cfg.full}"/>
+            <hbm2ddl update="true"/>
+        </hibernatetool>
+    </target>
+
+    <!-- validate schema -->
+    <target name="val.schema" depends="define.hibernate.tool">
+        <echo message="this will **NOT** make any database changes"/>
+        <hibernatetool destdir="${etc.dir}">
+            <annotationconfiguration configurationfile="${hib.cfg.full}"/>
+            <hbm2ddl export="false" update="true"/>
+        </hibernatetool>
+    </target>
+
+    <!-- load an entire database from another database -->
+    <target name="load.remote.db" 
+          depends="build.etc.path, compile">
+        <fail unless="hibernate.cfg">You must define variable "hibernate.cfg"</fail>
+        <fail unless="hibernate.load.cfg">You must define variable 
+          "hibernate.load.cfg"</fail>
+        <java classname="org.chi.db.LoadRemoteDatabase"
+                failonerror="true">
+            <classpath refid="build.etc.classpath"/>
+            <arg value="${etc.dir}/${hibernate.load.cfg}"/>
+            <arg value="${etc.dir}/${hibernate.cfg}"/>
+            <arg value="${etc.dir}/${load.first}"/>
+        </java>
+    </target>
+
+    <!-- ==================== CHI LIBRARY TARGETS ============== -->
+
+    <!-- call a build.core specific target -->
+    <target name="build.core.target">
+        <fail unless="chi.dir">You must define variable "chi.dir"</fail>
+        <fail unless="lib.dir">You must define variable "lib.dir"</fail>
+        <fail unless="core.target">You must define variable "core.target"</fail>
+        <ant antfile="${chi.dir}/build.xml" target="${core.target}" inheritAll="false"/>
+        <mkdir dir="${lib.dir}/chi"/>
+        <copy file="${chi.dir}/bin/lib/chi-core.jar" todir="${lib.dir}/chi"/>
+    </target>
+
+    <!-- compile the core jar and copy it over -->
+    <target name="build.core">
+        <property name="core.target" value="all"/>
+        <antcall target="build.core.target"/>
+    </target>
+
+    <!-- compile the core jar and copy it over (skip testing) -->
+    <target name="build.core.no.test">
+        <property name="core.target" value="export"/>
+        <antcall target="build.core.target"/>
+    </target>
+
+    <!-- compile the search jar and copy it over -->
+    <target name="build.search.target">
+        <fail unless="search.dir">You must define variable "search.dir"</fail>
+        <fail unless="lib.dir">You must define variable "lib.dir"</fail>
+        <fail unless="search.target">You must define variable "search.target"</fail>
+        <ant antfile="${search.dir}/build.xml" target="${search.target}" inheritAll="false"/>
+        <mkdir dir="${lib.dir}/chi"/>
+        <copy file="${search.dir}/bin/lib/chi-search.jar" todir="${lib.dir}/chi"/>
+    </target>
+
+    <!-- compile the search jar and copy it over -->
+    <target name="build.search">
+        <property name="search.target" value="all"/>
+        <antcall target="build.search.target"/>
+    </target>
+
+    <!-- compile the search jar and copy it over (skip testing) -->
+    <target name="build.search.no.test">
+        <property name="search.target" value="export"/>
+        <antcall target="build.search.target"/>
+    </target>
+
+    <!-- compile the vahiv code and copy it over -->
+    <target name="build.vahiv">
+        <fail unless="vahiv.dir">You must define variable "vahiv.dir"</fail>
+        <fail unless="lib.dir">You must define variable "lib.dir"</fail>
+        <ant antfile="${vahiv.dir}/build.xml" target="export" inheritAll="false"/>
+        <mkdir dir="${lib.dir}/chi"/>
+        <copy file="${vahiv.dir}/bin/lib/chi-vahiv.jar" todir="${lib.dir}/chi"/>
+    </target>
+
+    <!-- compile the aidsetc code and copy it over -->
+    <target name="build.aidsetc">
+        <fail unless="aidsetc.dir">You must define variable "aidsetc.dir"</fail>
+        <fail unless="lib.dir">You must define variable "lib.dir"</fail>
+        <ant antfile="${aidsetc.dir}/build.xml" target="export" inheritAll="false"/>
+        <mkdir dir="${lib.dir}/chi"/>
+        <copy file="${aidsetc.dir}/bin/lib/chi-aidsetc.jar" todir="${lib.dir}/chi"/>
+    </target>
+
+    <!-- compile the aidsetc code and copy it over -->
+    <target name="build.insite">
+        <fail unless="insite.dir">You must define variable "insite.dir"</fail>
+        <fail unless="lib.dir">You must define variable "lib.dir"</fail>
+        <ant antfile="${insite.dir}/build.xml" target="export" inheritAll="false"/>
+        <mkdir dir="${lib.dir}/chi"/>
+        <copy file="${insite.dir}/bin/lib/chi-insite.jar" todir="${lib.dir}/chi"/>
+    </target>
+
+    <!-- ==================== GROOVY TARGETS =================== -->
+
+    <!-- prepare the groovyc target -->
+    <target name="setup.groovy" depends="build.path">
+        <taskdef name="groovyc" classpathref="build.classpath"
+            classname="org.codehaus.groovy.ant.Groovyc"/>
+    </target>
+
+    <!-- compile any groovy source -->
+    <target name="compile.groovy" depends="setup.groovy">
+        <fail unless="groovy.src.dir">
+            You must define variable "groovy.src.dir"</fail>
+        <groovyc destdir="${build.dir}/classes" srcdir="${groovy.src.dir}" 
+            listfiles="true" classpathref="build.classpath"/>
+    </target>
+
+    <!-- test with groovy test cases -->
+    <target name="compile.groovy.tests" depends="compile.groovy">
+        <fail unless="groovy.test.dir">
+            You must define variable "groovy.test.dir"</fail>
+        <groovyc destdir="${build.dir}/classes" srcdir="${groovy.test.dir}" 
+            listfiles="true" classpathref="build.classpath"/>
+    </target>
+
+    <!-- run standard groovy tests -->
+    <target name="test.groovy" depends="compile.groovy.tests, test"/>
+
+    <!-- run etc groovy tests -->
+    <target name="test.groovy.etc" depends="compile.groovy.tests, test.etc"/>
+
+    <!-- ==================== PERSISTENCE TARGETS ============== -->
+
+    <target name="bulk.import" depends="build.etc.path">
+        <fail unless="bulk.import.xml">
+            You must define variable "bulk.import.xml"</fail>
+        <fail unless="persistence.jar">
+            You must define variable "persistence.jar"</fail>
+        <path id="persistence.classpath">
+            <pathelement location="${persistence.jar}"/>
+        </path>
+        <taskdef name="rootLoaderRef"
+            classname="org.codehaus.groovy.ant.RootLoaderRef"
+            classpathref="build.etc.classpath"/>
+        <rootLoaderRef ref="tmp.groovy.groovyc">
+          <classpath refid="persistence.classpath"/>
+        </rootLoaderRef>
+        <taskdef name="bulk-import" loaderref="tmp.groovy.groovyc"
+            classname="org.chi.persistence.ant.BulkImport" /> 
+        <bulk-import bulkimportxml="${bulk.import.xml}"/>
+    </target>
+
+    <target name="refresh.cache" depends="build.etc.path">
+        <fail unless="hibernate.cfg.xml">
+            You must define variable "hibernate.cfg.xml"</fail>
+        <fail unless="schema.dir">
+            You must define variable "schema.dir"</fail>
+        <fail unless="query.file">
+            You must define variable "query.file"</fail>
+        <fail unless="update.query">
+            You must define variable "update.query"</fail>
+        <path id="persistence.classpath">
+            <pathelement location="${persistence.jar}"/>
+        </path>
+        <taskdef name="rootLoaderRef"
+            classname="org.codehaus.groovy.ant.RootLoaderRef"
+            classpathref="build.etc.classpath"/>
+        <rootLoaderRef ref="tmp.groovy.groovyc">
+          <classpath refid="persistence.classpath"/>
+        </rootLoaderRef>
+        <taskdef name="refresh-cache" loaderref="tmp.groovy.groovyc"
+            classname="org.chi.persistence.ant.RefreshCache" /> 
+        <refresh-cache hibernateconfig="${hibernate.cfg.xml}" 
+            schemadir="${schema.dir}" queryfile="${query.file}"
+            updatequery="${update.query}"/>
+    </target>
+
+</project>
