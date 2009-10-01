@@ -1,0 +1,542 @@
+<!DOCTYPE HTML PUBLIC "-//W3C//DTD HTML 4.01 Transitional//EN" "http://www.w3.org/TR/html4/loose.dtd">
+<!--NewPage-->
+<HTML>
+<HEAD>
+<TITLE>
+DomainClass (Persistence API)
+</TITLE>
+
+<META NAME="keywords" CONTENT="org.chi.persistence.DomainClass class">
+
+<LINK REL ="stylesheet" TYPE="text/css" HREF="../../../stylesheet.css" TITLE="Style">
+
+<SCRIPT type="text/javascript">
+function windowTitle()
+{
+    parent.document.title="DomainClass (Persistence API)";
+}
+</SCRIPT>
+<NOSCRIPT>
+</NOSCRIPT>
+
+</HEAD>
+
+<BODY BGCOLOR="white" onload="windowTitle();">
+
+
+<!-- ========= START OF TOP NAVBAR ======= -->
+<A NAME="navbar_top"><!-- --></A>
+<A HREF="#skip-navbar_top" title="Skip navigation links"></A>
+<TABLE BORDER="0" WIDTH="100%" CELLPADDING="1" CELLSPACING="0" SUMMARY="">
+<TR>
+<TD COLSPAN=2 BGCOLOR="#EEEEFF" CLASS="NavBarCell1">
+<A NAME="navbar_top_firstrow"><!-- --></A>
+<TABLE BORDER="0" CELLPADDING="0" CELLSPACING="3" SUMMARY="">
+  <TR ALIGN="center" VALIGN="top">
+  <TD BGCOLOR="#EEEEFF" CLASS="NavBarCell1">    <A HREF="../../../overview-summary.html"><FONT CLASS="NavBarFont1"><B>Overview</B></FONT></A>&nbsp;</TD>
+  <TD BGCOLOR="#EEEEFF" CLASS="NavBarCell1">    <A HREF="package-summary.html"><FONT CLASS="NavBarFont1"><B>Package</B></FONT></A>&nbsp;</TD>
+  <TD BGCOLOR="#FFFFFF" CLASS="NavBarCell1Rev"> &nbsp;<FONT CLASS="NavBarFont1Rev"><B>Class</B></FONT>&nbsp;</TD>
+  <TD BGCOLOR="#EEEEFF" CLASS="NavBarCell1">    <A HREF="class-use/DomainClass.html"><FONT CLASS="NavBarFont1"><B>Use</B></FONT></A>&nbsp;</TD>
+  <TD BGCOLOR="#EEEEFF" CLASS="NavBarCell1">    <A HREF="package-tree.html"><FONT CLASS="NavBarFont1"><B>Tree</B></FONT></A>&nbsp;</TD>
+  <TD BGCOLOR="#EEEEFF" CLASS="NavBarCell1">    <A HREF="../../../deprecated-list.html"><FONT CLASS="NavBarFont1"><B>Deprecated</B></FONT></A>&nbsp;</TD>
+  <TD BGCOLOR="#EEEEFF" CLASS="NavBarCell1">    <A HREF="../../../index-all.html"><FONT CLASS="NavBarFont1"><B>Index</B></FONT></A>&nbsp;</TD>
+  <TD BGCOLOR="#EEEEFF" CLASS="NavBarCell1">    <A HREF="../../../help-doc.html"><FONT CLASS="NavBarFont1"><B>Help</B></FONT></A>&nbsp;</TD>
+  </TR>
+</TABLE>
+</TD>
+<TD ALIGN="right" VALIGN="top" ROWSPAN=3><EM>
+</EM>
+</TD>
+</TR>
+
+<TR>
+<TD BGCOLOR="white" CLASS="NavBarCell2"><FONT SIZE="-2">
+&nbsp;<A HREF="../../../org/chi/persistence/DomainBase.html" title="class in org.chi.persistence"><B>PREV CLASS</B></A>&nbsp;
+&nbsp;<A HREF="../../../org/chi/persistence/DomainObjectLoader.html" title="class in org.chi.persistence"><B>NEXT CLASS</B></A></FONT></TD>
+<TD BGCOLOR="white" CLASS="NavBarCell2"><FONT SIZE="-2">
+  <A HREF="../../../index.html?org/chi/persistence/DomainClass.html" target="_top"><B>FRAMES</B></A>  &nbsp;
+&nbsp;<A HREF="DomainClass.html" target="_top"><B>NO FRAMES</B></A>  &nbsp;
+&nbsp;<SCRIPT type="text/javascript">
+  <!--
+  if(window==top) {
+    document.writeln('<A HREF="../../../allclasses-noframe.html"><B>All Classes</B></A>');
+  }
+  //-->
+</SCRIPT>
+<NOSCRIPT>
+  <A HREF="../../../allclasses-noframe.html"><B>All Classes</B></A>
+</NOSCRIPT>
+
+
+</FONT></TD>
+</TR>
+<TR>
+<TD VALIGN="top" CLASS="NavBarCell3"><FONT SIZE="-2">
+  SUMMARY:&nbsp;NESTED&nbsp;|&nbsp;FIELD&nbsp;|&nbsp;<A HREF="#constructor_summary">CONSTR</A>&nbsp;|&nbsp;<A HREF="#method_summary">METHOD</A></FONT></TD>
+<TD VALIGN="top" CLASS="NavBarCell3"><FONT SIZE="-2">
+DETAIL:&nbsp;FIELD&nbsp;|&nbsp;<A HREF="#constructor_detail">CONSTR</A>&nbsp;|&nbsp;<A HREF="#method_detail">METHOD</A></FONT></TD>
+</TR>
+</TABLE>
+<A NAME="skip-navbar_top"></A>
+<!-- ========= END OF TOP NAVBAR ========= -->
+
+<HR>
+<!-- ======== START OF CLASS DATA ======== -->
+<H2>
+<FONT SIZE="-1">
+org.chi.persistence</FONT>
+<BR>
+Class DomainClass</H2>
+<PRE>
+java.lang.Object
+  <IMG SRC="../../../resources/inherit.gif" ALT="extended by "><A HREF="../../../org/chi/persistence/DomainBase.html" title="class in org.chi.persistence">org.chi.persistence.DomainBase</A>
+      <IMG SRC="../../../resources/inherit.gif" ALT="extended by "><B>org.chi.persistence.DomainClass</B>
+</PRE>
+<HR>
+<DL>
+<DT><PRE>public abstract class <B>DomainClass</B><DT>extends <A HREF="../../../org/chi/persistence/DomainBase.html" title="class in org.chi.persistence">DomainBase</A></DL>
+</PRE>
+
+<P>
+Represents a new domain class
+<P>
+
+<P>
+<DL>
+<DT><B>Author:</B></DT>
+  <DD>rgrey</DD>
+</DL>
+<HR>
+
+<P>
+
+<!-- ======== CONSTRUCTOR SUMMARY ======== -->
+
+<A NAME="constructor_summary"><!-- --></A>
+<TABLE BORDER="1" WIDTH="100%" CELLPADDING="3" CELLSPACING="0" SUMMARY="">
+<TR BGCOLOR="#CCCCFF" CLASS="TableHeadingColor">
+<TH ALIGN="left" COLSPAN="2"><FONT SIZE="+2">
+<B>Constructor Summary</B></FONT></TH>
+</TR>
+<TR BGCOLOR="white" CLASS="TableRowColor">
+<TD><CODE><B><A HREF="../../../org/chi/persistence/DomainClass.html#DomainClass(java.lang.String, boolean)">DomainClass</A></B>(java.lang.String&nbsp;name,
+            boolean&nbsp;externalRef)</CODE>
+
+<BR>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;Constructor with name</TD>
+</TR>
+</TABLE>
+&nbsp;
+<!-- ========== METHOD SUMMARY =========== -->
+
+<A NAME="method_summary"><!-- --></A>
+<TABLE BORDER="1" WIDTH="100%" CELLPADDING="3" CELLSPACING="0" SUMMARY="">
+<TR BGCOLOR="#CCCCFF" CLASS="TableHeadingColor">
+<TH ALIGN="left" COLSPAN="2"><FONT SIZE="+2">
+<B>Method Summary</B></FONT></TH>
+</TR>
+<TR BGCOLOR="white" CLASS="TableRowColor">
+<TD ALIGN="right" VALIGN="top" WIDTH="1%"><FONT SIZE="-1">
+<CODE>&nbsp;java.lang.String</CODE></FONT></TD>
+<TD><CODE><B><A HREF="../../../org/chi/persistence/DomainClass.html#buildTemplate(java.lang.String)">buildTemplate</A></B>(java.lang.String&nbsp;template)</CODE>
+
+<BR>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;Build a groovy domain class from a template</TD>
+</TR>
+<TR BGCOLOR="white" CLASS="TableRowColor">
+<TD ALIGN="right" VALIGN="top" WIDTH="1%"><FONT SIZE="-1">
+<CODE>&nbsp;java.util.Collection&lt;<A HREF="../../../org/chi/persistence/DomainClass.html" title="class in org.chi.persistence">DomainClass</A>&gt;</CODE></FONT></TD>
+<TD><CODE><B><A HREF="../../../org/chi/persistence/DomainClass.html#getChildren()">getChildren</A></B>()</CODE>
+
+<BR>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;Convenience</TD>
+</TR>
+<TR BGCOLOR="white" CLASS="TableRowColor">
+<TD ALIGN="right" VALIGN="top" WIDTH="1%"><FONT SIZE="-1">
+<CODE>&nbsp;java.lang.String</CODE></FONT></TD>
+<TD><CODE><B><A HREF="../../../org/chi/persistence/DomainClass.html#getDefString()">getDefString</A></B>()</CODE>
+
+<BR>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;Get the variable definition string</TD>
+</TR>
+<TR BGCOLOR="white" CLASS="TableRowColor">
+<TD ALIGN="right" VALIGN="top" WIDTH="1%"><FONT SIZE="-1">
+<CODE>&nbsp;java.lang.String[]</CODE></FONT></TD>
+<TD><CODE><B><A HREF="../../../org/chi/persistence/DomainClass.html#getElements()">getElements</A></B>()</CODE>
+
+<BR>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;Get primitives and children that aren't attributes</TD>
+</TR>
+<TR BGCOLOR="white" CLASS="TableRowColor">
+<TD ALIGN="right" VALIGN="top" WIDTH="1%"><FONT SIZE="-1">
+<CODE>&nbsp;java.util.Collection&lt;<A HREF="../../../org/chi/persistence/DomainBase.html" title="class in org.chi.persistence">DomainBase</A>&gt;</CODE></FONT></TD>
+<TD><CODE><B><A HREF="../../../org/chi/persistence/DomainClass.html#getFields()">getFields</A></B>()</CODE>
+
+<BR>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;Get the fields</TD>
+</TR>
+<TR BGCOLOR="white" CLASS="TableRowColor">
+<TD ALIGN="right" VALIGN="top" WIDTH="1%"><FONT SIZE="-1">
+<CODE>&nbsp;java.util.Collection&lt;<A HREF="../../../org/chi/persistence/DomainPrimitive.html" title="class in org.chi.persistence">DomainPrimitive</A>&gt;</CODE></FONT></TD>
+<TD><CODE><B><A HREF="../../../org/chi/persistence/DomainClass.html#getPrimitives()">getPrimitives</A></B>()</CODE>
+
+<BR>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;Convenience</TD>
+</TR>
+<TR BGCOLOR="white" CLASS="TableRowColor">
+<TD ALIGN="right" VALIGN="top" WIDTH="1%"><FONT SIZE="-1">
+<CODE>&nbsp;java.lang.String</CODE></FONT></TD>
+<TD><CODE><B><A HREF="../../../org/chi/persistence/DomainClass.html#getSchema()">getSchema</A></B>()</CODE>
+
+<BR>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;</TD>
+</TR>
+<TR BGCOLOR="white" CLASS="TableRowColor">
+<TD ALIGN="right" VALIGN="top" WIDTH="1%"><FONT SIZE="-1">
+<CODE>&nbsp;java.lang.String</CODE></FONT></TD>
+<TD><CODE><B><A HREF="../../../org/chi/persistence/DomainClass.html#getSchemaName()">getSchemaName</A></B>()</CODE>
+
+<BR>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;</TD>
+</TR>
+<TR BGCOLOR="white" CLASS="TableRowColor">
+<TD ALIGN="right" VALIGN="top" WIDTH="1%"><FONT SIZE="-1">
+<CODE>&nbsp;boolean</CODE></FONT></TD>
+<TD><CODE><B><A HREF="../../../org/chi/persistence/DomainClass.html#hasField(java.lang.String)">hasField</A></B>(java.lang.String&nbsp;name)</CODE>
+
+<BR>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;Does this class contain a particular field</TD>
+</TR>
+<TR BGCOLOR="white" CLASS="TableRowColor">
+<TD ALIGN="right" VALIGN="top" WIDTH="1%"><FONT SIZE="-1">
+<CODE>&nbsp;boolean</CODE></FONT></TD>
+<TD><CODE><B><A HREF="../../../org/chi/persistence/DomainClass.html#isExternalRef()">isExternalRef</A></B>()</CODE>
+
+<BR>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;Does this classes refernce an external entity?</TD>
+</TR>
+<TR BGCOLOR="white" CLASS="TableRowColor">
+<TD ALIGN="right" VALIGN="top" WIDTH="1%"><FONT SIZE="-1">
+<CODE>&nbsp;void</CODE></FONT></TD>
+<TD><CODE><B><A HREF="../../../org/chi/persistence/DomainClass.html#merge(org.chi.persistence.DomainClass)">merge</A></B>(<A HREF="../../../org/chi/persistence/DomainClass.html" title="class in org.chi.persistence">DomainClass</A>&nbsp;original)</CODE>
+
+<BR>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;Merge the domain class fields</TD>
+</TR>
+<TR BGCOLOR="white" CLASS="TableRowColor">
+<TD ALIGN="right" VALIGN="top" WIDTH="1%"><FONT SIZE="-1">
+<CODE>&nbsp;void</CODE></FONT></TD>
+<TD><CODE><B><A HREF="../../../org/chi/persistence/DomainClass.html#setSchema(java.lang.String, java.lang.String)">setSchema</A></B>(java.lang.String&nbsp;name,
+          java.lang.String&nbsp;schema)</CODE>
+
+<BR>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;Set the schema that this class was generated from</TD>
+</TR>
+<TR BGCOLOR="white" CLASS="TableRowColor">
+<TD ALIGN="right" VALIGN="top" WIDTH="1%"><FONT SIZE="-1">
+<CODE>&nbsp;java.lang.String</CODE></FONT></TD>
+<TD><CODE><B><A HREF="../../../org/chi/persistence/DomainClass.html#toString()">toString</A></B>()</CODE>
+
+<BR>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;</TD>
+</TR>
+</TABLE>
+&nbsp;<A NAME="methods_inherited_from_class_org.chi.persistence.DomainBase"><!-- --></A>
+<TABLE BORDER="1" WIDTH="100%" CELLPADDING="3" CELLSPACING="0" SUMMARY="">
+<TR BGCOLOR="#EEEEFF" CLASS="TableSubHeadingColor">
+<TH ALIGN="left"><B>Methods inherited from class org.chi.persistence.<A HREF="../../../org/chi/persistence/DomainBase.html" title="class in org.chi.persistence">DomainBase</A></B></TH>
+</TR>
+<TR BGCOLOR="white" CLASS="TableRowColor">
+<TD><CODE><A HREF="../../../org/chi/persistence/DomainBase.html#equals(java.lang.Object)">equals</A>, <A HREF="../../../org/chi/persistence/DomainBase.html#getConstraints()">getConstraints</A>, <A HREF="../../../org/chi/persistence/DomainBase.html#getName()">getName</A>, <A HREF="../../../org/chi/persistence/DomainBase.html#getValues()">getValues</A>, <A HREF="../../../org/chi/persistence/DomainBase.html#getVarName()">getVarName</A>, <A HREF="../../../org/chi/persistence/DomainBase.html#hashCode()">hashCode</A>, <A HREF="../../../org/chi/persistence/DomainBase.html#isMultiple()">isMultiple</A>, <A HREF="../../../org/chi/persistence/DomainBase.html#isOptional()">isOptional</A>, <A HREF="../../../org/chi/persistence/DomainBase.html#merge(org.chi.persistence.DomainBase)">merge</A>, <A HREF="../../../org/chi/persistence/DomainBase.html#setMaxLength(java.lang.String)">setMaxLength</A>, <A HREF="../../../org/chi/persistence/DomainBase.html#setMultiple(boolean)">setMultiple</A>, <A HREF="../../../org/chi/persistence/DomainBase.html#setOptional(boolean)">setOptional</A></CODE></TD>
+</TR>
+</TABLE>
+&nbsp;<A NAME="methods_inherited_from_class_java.lang.Object"><!-- --></A>
+<TABLE BORDER="1" WIDTH="100%" CELLPADDING="3" CELLSPACING="0" SUMMARY="">
+<TR BGCOLOR="#EEEEFF" CLASS="TableSubHeadingColor">
+<TH ALIGN="left"><B>Methods inherited from class java.lang.Object</B></TH>
+</TR>
+<TR BGCOLOR="white" CLASS="TableRowColor">
+<TD><CODE>clone, finalize, getClass, notify, notifyAll, wait, wait, wait</CODE></TD>
+</TR>
+</TABLE>
+&nbsp;
+<P>
+
+<!-- ========= CONSTRUCTOR DETAIL ======== -->
+
+<A NAME="constructor_detail"><!-- --></A>
+<TABLE BORDER="1" WIDTH="100%" CELLPADDING="3" CELLSPACING="0" SUMMARY="">
+<TR BGCOLOR="#CCCCFF" CLASS="TableHeadingColor">
+<TH ALIGN="left" COLSPAN="1"><FONT SIZE="+2">
+<B>Constructor Detail</B></FONT></TH>
+</TR>
+</TABLE>
+
+<A NAME="DomainClass(java.lang.String, boolean)"><!-- --></A><H3>
+DomainClass</H3>
+<PRE>
+public <B>DomainClass</B>(java.lang.String&nbsp;name,
+                   boolean&nbsp;externalRef)</PRE>
+<DL>
+<DD>Constructor with name
+<P>
+<DL>
+<DT><B>Parameters:</B><DD><CODE>name</CODE> - </DL>
+</DL>
+
+<!-- ============ METHOD DETAIL ========== -->
+
+<A NAME="method_detail"><!-- --></A>
+<TABLE BORDER="1" WIDTH="100%" CELLPADDING="3" CELLSPACING="0" SUMMARY="">
+<TR BGCOLOR="#CCCCFF" CLASS="TableHeadingColor">
+<TH ALIGN="left" COLSPAN="1"><FONT SIZE="+2">
+<B>Method Detail</B></FONT></TH>
+</TR>
+</TABLE>
+
+<A NAME="getDefString()"><!-- --></A><H3>
+getDefString</H3>
+<PRE>
+public java.lang.String <B>getDefString</B>()</PRE>
+<DL>
+<DD><B>Description copied from class: <CODE><A HREF="../../../org/chi/persistence/DomainBase.html#getDefString()">DomainBase</A></CODE></B></DD>
+<DD>Get the variable definition string
+<P>
+<DD><DL>
+<DT><B>Specified by:</B><DD><CODE><A HREF="../../../org/chi/persistence/DomainBase.html#getDefString()">getDefString</A></CODE> in class <CODE><A HREF="../../../org/chi/persistence/DomainBase.html" title="class in org.chi.persistence">DomainBase</A></CODE></DL>
+</DD>
+<DD><DL>
+
+<DT><B>Returns:</B><DD></DL>
+</DD>
+</DL>
+<HR>
+
+<A NAME="getFields()"><!-- --></A><H3>
+getFields</H3>
+<PRE>
+public java.util.Collection&lt;<A HREF="../../../org/chi/persistence/DomainBase.html" title="class in org.chi.persistence">DomainBase</A>&gt; <B>getFields</B>()</PRE>
+<DL>
+<DD>Get the fields
+<P>
+<DD><DL>
+
+<DT><B>Returns:</B><DD></DL>
+</DD>
+</DL>
+<HR>
+
+<A NAME="hasField(java.lang.String)"><!-- --></A><H3>
+hasField</H3>
+<PRE>
+public boolean <B>hasField</B>(java.lang.String&nbsp;name)</PRE>
+<DL>
+<DD>Does this class contain a particular field
+<P>
+<DD><DL>
+<DT><B>Parameters:</B><DD><CODE>name</CODE> - 
+<DT><B>Returns:</B><DD></DL>
+</DD>
+</DL>
+<HR>
+
+<A NAME="getChildren()"><!-- --></A><H3>
+getChildren</H3>
+<PRE>
+public java.util.Collection&lt;<A HREF="../../../org/chi/persistence/DomainClass.html" title="class in org.chi.persistence">DomainClass</A>&gt; <B>getChildren</B>()</PRE>
+<DL>
+<DD>Convenience
+<P>
+<DD><DL>
+
+<DT><B>Returns:</B><DD></DL>
+</DD>
+</DL>
+<HR>
+
+<A NAME="getPrimitives()"><!-- --></A><H3>
+getPrimitives</H3>
+<PRE>
+public java.util.Collection&lt;<A HREF="../../../org/chi/persistence/DomainPrimitive.html" title="class in org.chi.persistence">DomainPrimitive</A>&gt; <B>getPrimitives</B>()</PRE>
+<DL>
+<DD>Convenience
+<P>
+<DD><DL>
+
+<DT><B>Returns:</B><DD></DL>
+</DD>
+</DL>
+<HR>
+
+<A NAME="getElements()"><!-- --></A><H3>
+getElements</H3>
+<PRE>
+public java.lang.String[] <B>getElements</B>()</PRE>
+<DL>
+<DD>Get primitives and children that aren't attributes
+<P>
+<DD><DL>
+
+<DT><B>Returns:</B><DD></DL>
+</DD>
+</DL>
+<HR>
+
+<A NAME="getSchema()"><!-- --></A><H3>
+getSchema</H3>
+<PRE>
+public java.lang.String <B>getSchema</B>()</PRE>
+<DL>
+<DD><DL>
+
+<DT><B>Returns:</B><DD>the schema</DL>
+</DD>
+</DL>
+<HR>
+
+<A NAME="getSchemaName()"><!-- --></A><H3>
+getSchemaName</H3>
+<PRE>
+public java.lang.String <B>getSchemaName</B>()</PRE>
+<DL>
+<DD><DL>
+
+<DT><B>Returns:</B><DD>the schema name</DL>
+</DD>
+</DL>
+<HR>
+
+<A NAME="setSchema(java.lang.String, java.lang.String)"><!-- --></A><H3>
+setSchema</H3>
+<PRE>
+public void <B>setSchema</B>(java.lang.String&nbsp;name,
+                      java.lang.String&nbsp;schema)</PRE>
+<DL>
+<DD>Set the schema that this class was generated from
+<P>
+<DD><DL>
+<DT><B>Parameters:</B><DD><CODE>name</CODE> - the schema name<DD><CODE>schema</CODE> - the schema to set</DL>
+</DD>
+</DL>
+<HR>
+
+<A NAME="isExternalRef()"><!-- --></A><H3>
+isExternalRef</H3>
+<PRE>
+public boolean <B>isExternalRef</B>()</PRE>
+<DL>
+<DD>Does this classes refernce an external entity?
+<P>
+<DD><DL>
+
+<DT><B>Returns:</B><DD></DL>
+</DD>
+</DL>
+<HR>
+
+<A NAME="buildTemplate(java.lang.String)"><!-- --></A><H3>
+buildTemplate</H3>
+<PRE>
+public java.lang.String <B>buildTemplate</B>(java.lang.String&nbsp;template)
+                               throws org.chi.util.GeneralException</PRE>
+<DL>
+<DD>Build a groovy domain class from a template
+<P>
+<DD><DL>
+<DT><B>Parameters:</B><DD><CODE>template</CODE> - 
+<DT><B>Returns:</B><DD>
+<DT><B>Throws:</B>
+<DD><CODE>org.chi.util.GeneralException</CODE></DL>
+</DD>
+</DL>
+<HR>
+
+<A NAME="merge(org.chi.persistence.DomainClass)"><!-- --></A><H3>
+merge</H3>
+<PRE>
+public void <B>merge</B>(<A HREF="../../../org/chi/persistence/DomainClass.html" title="class in org.chi.persistence">DomainClass</A>&nbsp;original)</PRE>
+<DL>
+<DD>Merge the domain class fields
+<P>
+<DD><DL>
+<DT><B>Parameters:</B><DD><CODE>original</CODE> - </DL>
+</DD>
+</DL>
+<HR>
+
+<A NAME="toString()"><!-- --></A><H3>
+toString</H3>
+<PRE>
+public java.lang.String <B>toString</B>()</PRE>
+<DL>
+<DD><DL>
+<DT><B>Overrides:</B><DD><CODE>toString</CODE> in class <CODE>java.lang.Object</CODE></DL>
+</DD>
+<DD><DL>
+</DL>
+</DD>
+</DL>
+<!-- ========= END OF CLASS DATA ========= -->
+<HR>
+
+
+<!-- ======= START OF BOTTOM NAVBAR ====== -->
+<A NAME="navbar_bottom"><!-- --></A>
+<A HREF="#skip-navbar_bottom" title="Skip navigation links"></A>
+<TABLE BORDER="0" WIDTH="100%" CELLPADDING="1" CELLSPACING="0" SUMMARY="">
+<TR>
+<TD COLSPAN=2 BGCOLOR="#EEEEFF" CLASS="NavBarCell1">
+<A NAME="navbar_bottom_firstrow"><!-- --></A>
+<TABLE BORDER="0" CELLPADDING="0" CELLSPACING="3" SUMMARY="">
+  <TR ALIGN="center" VALIGN="top">
+  <TD BGCOLOR="#EEEEFF" CLASS="NavBarCell1">    <A HREF="../../../overview-summary.html"><FONT CLASS="NavBarFont1"><B>Overview</B></FONT></A>&nbsp;</TD>
+  <TD BGCOLOR="#EEEEFF" CLASS="NavBarCell1">    <A HREF="package-summary.html"><FONT CLASS="NavBarFont1"><B>Package</B></FONT></A>&nbsp;</TD>
+  <TD BGCOLOR="#FFFFFF" CLASS="NavBarCell1Rev"> &nbsp;<FONT CLASS="NavBarFont1Rev"><B>Class</B></FONT>&nbsp;</TD>
+  <TD BGCOLOR="#EEEEFF" CLASS="NavBarCell1">    <A HREF="class-use/DomainClass.html"><FONT CLASS="NavBarFont1"><B>Use</B></FONT></A>&nbsp;</TD>
+  <TD BGCOLOR="#EEEEFF" CLASS="NavBarCell1">    <A HREF="package-tree.html"><FONT CLASS="NavBarFont1"><B>Tree</B></FONT></A>&nbsp;</TD>
+  <TD BGCOLOR="#EEEEFF" CLASS="NavBarCell1">    <A HREF="../../../deprecated-list.html"><FONT CLASS="NavBarFont1"><B>Deprecated</B></FONT></A>&nbsp;</TD>
+  <TD BGCOLOR="#EEEEFF" CLASS="NavBarCell1">    <A HREF="../../../index-all.html"><FONT CLASS="NavBarFont1"><B>Index</B></FONT></A>&nbsp;</TD>
+  <TD BGCOLOR="#EEEEFF" CLASS="NavBarCell1">    <A HREF="../../../help-doc.html"><FONT CLASS="NavBarFont1"><B>Help</B></FONT></A>&nbsp;</TD>
+  </TR>
+</TABLE>
+</TD>
+<TD ALIGN="right" VALIGN="top" ROWSPAN=3><EM>
+</EM>
+</TD>
+</TR>
+
+<TR>
+<TD BGCOLOR="white" CLASS="NavBarCell2"><FONT SIZE="-2">
+&nbsp;<A HREF="../../../org/chi/persistence/DomainBase.html" title="class in org.chi.persistence"><B>PREV CLASS</B></A>&nbsp;
+&nbsp;<A HREF="../../../org/chi/persistence/DomainObjectLoader.html" title="class in org.chi.persistence"><B>NEXT CLASS</B></A></FONT></TD>
+<TD BGCOLOR="white" CLASS="NavBarCell2"><FONT SIZE="-2">
+  <A HREF="../../../index.html?org/chi/persistence/DomainClass.html" target="_top"><B>FRAMES</B></A>  &nbsp;
+&nbsp;<A HREF="DomainClass.html" target="_top"><B>NO FRAMES</B></A>  &nbsp;
+&nbsp;<SCRIPT type="text/javascript">
+  <!--
+  if(window==top) {
+    document.writeln('<A HREF="../../../allclasses-noframe.html"><B>All Classes</B></A>');
+  }
+  //-->
+</SCRIPT>
+<NOSCRIPT>
+  <A HREF="../../../allclasses-noframe.html"><B>All Classes</B></A>
+</NOSCRIPT>
+
+
+</FONT></TD>
+</TR>
+<TR>
+<TD VALIGN="top" CLASS="NavBarCell3"><FONT SIZE="-2">
+  SUMMARY:&nbsp;NESTED&nbsp;|&nbsp;FIELD&nbsp;|&nbsp;<A HREF="#constructor_summary">CONSTR</A>&nbsp;|&nbsp;<A HREF="#method_summary">METHOD</A></FONT></TD>
+<TD VALIGN="top" CLASS="NavBarCell3"><FONT SIZE="-2">
+DETAIL:&nbsp;FIELD&nbsp;|&nbsp;<A HREF="#constructor_detail">CONSTR</A>&nbsp;|&nbsp;<A HREF="#method_detail">METHOD</A></FONT></TD>
+</TR>
+</TABLE>
+<A NAME="skip-navbar_bottom"></A>
+<!-- ======== END OF BOTTOM NAVBAR ======= -->
+
+<HR>
+<i>Copyright &#169; Center for HIV Information</i>
+</BODY>
+</HTML>
