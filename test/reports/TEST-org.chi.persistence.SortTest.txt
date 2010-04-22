@@ -1,0 +1,8 @@
+Testsuite: org.chi.persistence.SortTest
+Tests run: 5, Failures: 0, Errors: 0, Time elapsed: 0.846 sec
+
+Testcase: testSort took 0.752 sec
+Testcase: testPredicateSort took 0.021 sec
+Testcase: testPredicateParamSort took 0.01 sec
+Testcase: testComplexPredicateSort took 0.018 sec
+Testcase: testGroup took 0.021 sec

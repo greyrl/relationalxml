@@ -42,13 +42,22 @@ public abstract class Threaded extends PooledThread implements ServletContextLis
      */
     public abstract void process() throws InterruptedException;
     
+    /**
+     * Override this to specify a single store on multiple store sites
+     * @param id
+     * @return
+     */
+    public boolean correctStore(String id) {
+        return true;
+    }
+
     public void contextInitialized(ServletContextEvent sce) {
         ServletContext sc = sce.getServletContext();
         SimpleApplicationContext sac = new SimpleApplicationContext(sc);
         Element pe = sac.getConfigElement("persistence");
         for (Element scfg : ElectricUtil.getAllElementsNamed(pe, "store")) {
             String id = scfg.getAttribute("id");
-            if (id == null) continue;
+            if (id == null || ! correctStore(id)) continue;
             start(Loader.getStore(id), getClass(), sac);
         }
     }

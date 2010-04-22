@@ -117,6 +117,7 @@ jQuery.perstools = {
         if (! config.error) config.error = this._handleXhrError;
         var xmlStr = this.xmlGen.generate($(config.data)[0]);
         xmlStr = jQuery.dom.innerXML(xmlStr);
+        xmlStr = jQuery.base64.utf8Encode(xmlStr);
         $.ajax({
             url: jQuery.trim(config.url),
             type: "POST",

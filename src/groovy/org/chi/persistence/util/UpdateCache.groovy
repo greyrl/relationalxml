@@ -134,17 +134,23 @@ class UpdateThread extends PooledThread {
                 Log.debug msg + "update ${i}, type ${t}"
                 def update = serial.session.get(t, i)
                 def done = ! update || complete.contains(update.hashCode())
-                if (! done) update = LockItem.lock(update, serial)
-                else it = LockItem.lock(it, serial)
-                if (! done) update.xmlcache = serial.serialize(update)
+                def keys = null
                 try {
+                    if (! done) { 
+                        keys = LockItem.keys(update, serial)
+                        update = LockItem.lock(update, keys, serial)
+                    } else {
+                        keys = LockItem.keys(it, serial)
+                        it = LockItem.lock(it, keys, serial)
+                    }
+                    if (! done) update.xmlcache = serial.serialize(update)
                     if (! done) serial.session.save(update)
                     serial.session.delete(it)
                     if (! done) UpdateCache.remove(update)
                     if (! done) complete.add(update.hashCode())
                     serial.succeed()
                 } finally {
-                    LockItem.unlock(serial)
+                    LockItem.unlock(keys, serial)
                 }
                 Log.debug msg + "total ${items.size()}, complete ${++count}"
             }

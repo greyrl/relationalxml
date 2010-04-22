@@ -40,6 +40,7 @@ class XmlSerializer extends HibernateTools implements GroovyInterceptable {
     private static final String ILN = RelaxSchema.ilName
     private static final String dateRep = 
         "lastUpdated:[-]?[0-9]*,created:[-]?[0-9]*"
+    private static final tkeys = new ThreadLocal<List>()
 
     private SessionFactory sf
     private SchemaParser validator
@@ -83,7 +84,7 @@ class XmlSerializer extends HibernateTools implements GroovyInterceptable {
         long timing = System.currentTimeMillis()
         Object obj = extract(reader, _class)
         timing = Log.timing("XmlSerializer.save", timing, "extract")
-        LockItem.lock(obj, this, 100)
+        LockItem.lock(obj, tkeys.get(), this, 100, 50)
         timing = Log.timing("XmlSerializer.save", timing, "lock")
         try {
             def xmlc = changed(obj)
@@ -97,11 +98,14 @@ class XmlSerializer extends HibernateTools implements GroovyInterceptable {
             updated.each { UpdateCache.update(it, this, obj) }
             timing = Log.timing("XmlSerializer.save", timing, "cache")
             succeed()
-            return prepandwritexml("result", UpdateCache.get(obj), false)
+            def result = UpdateCache.get(obj)
+            if (! result.trim()) result = serialize(obj)
+            return prepandwritexml("result", result, false)
         } finally {
-            LockItem.unlock(this)
+            LockItem.unlock(tkeys.get(), this)
             timing = Log.timing("XmlSerializer.save", timing, "save")
             Log.debug("XmlSerializer.save() : timing ================")
+            tkeys.remove()
         }
     }
 
@@ -122,6 +126,7 @@ class XmlSerializer extends HibernateTools implements GroovyInterceptable {
      * @return the new object
      */
     String copy(String type, Serializable id) {
+        long timing = System.currentTimeMillis()
         def obj = null
         Log.debug "XmlSerializer.copy() : ${type}, id ${id}"
         try {
@@ -131,15 +136,23 @@ class XmlSerializer extends HibernateTools implements GroovyInterceptable {
                 Log.console "XmlSerializer.copy() : unable to find object"
                 return
             }
+            timing = Log.timing("XmlSerializer.copy", timing, "setup")
+            def reader = new StringReader(UpdateCache.get(obj))
+            obj = extract(reader, obj.class.name)
+            timing = Log.timing("XmlSerializer.copy", timing, "extract")
             XmlCompare xmlc = new XmlCompare()
             obj = storeAll(replicate(obj), xmlc)
+            timing = Log.timing("XmlSerializer.copy", timing, "save")
             xmlc.findUpdated(obj).each { UpdateCache.update(it, this) }
+            timing = Log.timing("XmlSerializer.copy", timing, "update")
             succeed()
         } finally {
             endTransaction()
             closeSession()
+            Log.timing("XmlSerializer.copy", timing, "finish")
+            Log.debug("XmlSerializer.copy() : timing ================")
         }
-        return serialize(obj)
+        return UpdateCache.get(obj)
     }
 
     /**
@@ -182,7 +195,7 @@ class XmlSerializer extends HibernateTools implements GroovyInterceptable {
                 def list = hquery.list()
                 if (Boolean.valueOf(query.'@remove-dupes')) list = list.unique()
                 list = reduce(list)
-                def total = alen ? list.size() / alen : list.size();
+                def total = alen ? (int) (list.size() / alen) : list.size();
                 Log.timing("XmlSerializer.sqlLoad", timing, "query")
                 result.append(" result-count=\"${total}\">\n")
                 if (amark) result.append("<${amark}>")
@@ -192,8 +205,10 @@ class XmlSerializer extends HibernateTools implements GroovyInterceptable {
                     if (nextm) result.append("</${amark}><${amark}>")
                     String _cache = UpdateCache.get(it)
                     if (! _cache) {
-                        def msg = " no cached db value ${it}"
-                        Log.console "XmlSerializer.sqlLoad() :"  + msg
+                        if (Log.isDebugEnabled()) {
+                            def msg = " no cached db value ${it}"
+                            Log.debug "XmlSerializer.sqlLoad() :"  + msg
+                        }
                         if (alen) { 
                             def name = alias[i % alen]
                             result.append(serialize(it, name, null))
@@ -259,6 +274,7 @@ class XmlSerializer extends HibernateTools implements GroovyInterceptable {
      * @return
      */
     Object extract(Reader reader, String domainClass) {
+        tkeys.set([]); 
         Class _class = getDomainClass(domainClass) 
         assert _class && _class.schema
         def root = validator.validate(reader, _class.schema, schemas)
@@ -506,8 +522,12 @@ class XmlSerializer extends HibernateTools implements GroovyInterceptable {
     private extractField(Element prnt, String name, Object obj, Object val, 
             over=null) {
         Element _new = prnt.addElement(name)
+        def _class = val.class
+        if (_class.simpleName.contains("javassist")) {
+            _class = val.metaClass.theClass
+        }
         // one-to-one
-        if (classes.contains(val.class)) genxml(val, _new, over)
+        if (classes.contains(_class)) genxml(val, _new, over)
         // boolean might have no body
         else if (! obj.empty.contains(name)) _new.addText(getFieldValue(val))
     }
@@ -559,8 +579,12 @@ class XmlSerializer extends HibernateTools implements GroovyInterceptable {
             def m = result.class.name
             throw new Exception("Unable to find property '${name}' on '${m}'")
         }
-        def res = executeCreate(path, mbp.type, result[name])
+        def res = executeCreate(path, mbp.field.type, result[name])
         result[name] = res
+        if ("id".equals(name)) {
+            def k = LockItem.genkey(res.toString(), result.class.simpleName)
+            tkeys.get().add(k)
+        }
         if (! order || ! res || ! result.elements.contains(name)) return result
         if (res in Collection) result.addOrder(name, res[res.size() - 1])
         else result.addOrder(name, res)
@@ -717,7 +741,7 @@ class XmlSerializer extends HibernateTools implements GroovyInterceptable {
     private boolean orderchange(orig, obj) {
         if (! obj.metaClass.hasProperty(obj, ILN)) return false
         def exist = orig && orig.interleave && orig.interleave.id
-        if (! exist) return true
+        if (! exist || ! obj.interleave) return true
         def str1 = orig.interleave.ordering.replaceAll(dateRep, "")
         def str2 = obj.interleave.ordering.replaceAll(dateRep, "")
         if (str1 == str2) return false
@@ -748,7 +772,8 @@ class XmlSerializer extends HibernateTools implements GroovyInterceptable {
         if (! obj.parents) return res
         obj.parents.each() { parent -> 
             String query = PersistUtils.lowerCamelCase(obj.class.name)
-            query = "from ${parent} where ${query}.id = ${obj.id}"
+            query = "select parent from ${parent} parent join parent.${query} " + 
+                "as ${query} where ${query}.id = ${obj.id}"
             Log.debug "UpdateCache.updateCache() : process [${query}]"
             session.createQuery(query).list().each { load ->
                 if (! res.contains(load)) loadParents(load, res)

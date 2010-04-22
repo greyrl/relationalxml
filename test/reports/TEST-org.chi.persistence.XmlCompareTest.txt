@@ -1,0 +1,15 @@
+Testsuite: org.chi.persistence.XmlCompareTest
+Tests run: 7, Failures: 0, Errors: 0, Time elapsed: 0.999 sec
+------------- Standard Output ---------------
+XmlCompare.compare() : null left or right
+XmlCompare.compare() : null left or right
+XmlCompare.compare() : null left or right
+------------- ---------------- ---------------
+
+Testcase: testSimpleModify took 0.865 sec
+Testcase: testModify took 0.025 sec
+Testcase: testAdd took 0.041 sec
+Testcase: testDelete took 0.014 sec
+Testcase: testAddAndDelete took 0.009 sec
+Testcase: testSwitch took 0.02 sec
+Testcase: testNull took 0.005 sec

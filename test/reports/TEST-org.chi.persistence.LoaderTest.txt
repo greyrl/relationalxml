@@ -1,0 +1,9 @@
+Testsuite: org.chi.persistence.LoaderTest
+Tests run: 1, Failures: 0, Errors: 0, Time elapsed: 6.44 sec
+------------- Standard Output ---------------
+Save ID [3145728]
+Loaded Object [Test : 3145728]
+Loaded Value [blaa]
+------------- ---------------- ---------------
+
+Testcase: testSave took 6.421 sec

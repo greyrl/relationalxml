@@ -1,5 +1,9 @@
 package org.chi.persistence;
 
+import groovy.lang.ExpandoMetaClassCreationHandle;
+import groovy.lang.GroovySystem;
+import groovy.lang.MetaClassRegistry;
+
 import java.io.IOException;
 import java.io.InputStream;
 import java.io.InputStreamReader;
@@ -28,11 +32,10 @@ public class PersistenceLoader extends HibernateTools {
     
     private static final String TEMPLATE_FILE = "domainclass.groovy";
     private static final HashMap<String, PersistenceLoader> inst; 
-    private static final HashMap<String, Class<?>> classes;
+    private HashMap<String, Class<?>> classes = new HashMap<String, Class<?>>();
     
     static {
         inst = new HashMap<String, PersistenceLoader>(); 
-        classes = new HashMap<String, Class<?>>();
     }
     
     private GrailsAwareClassLoader cl;
@@ -94,6 +97,8 @@ public class PersistenceLoader extends HibernateTools {
         if (classes.size() == 0) return;
         if (sessionFactory != null) 
             throw new GeneralException("Load has already been called");
+        MetaClassRegistry registry = GroovySystem.getMetaClassRegistry();
+        registry.setMetaClassCreationHandle(new ExpandoMetaClassCreationHandle());
         GrailsApplication application = new DefaultGrailsApplication(
                 classes.values().toArray(new Class[0]), cl);
         application.initialise();

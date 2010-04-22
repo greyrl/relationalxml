@@ -8,6 +8,7 @@ import org.chi.persistence.DomainObjectLoader.DomainClass
 class $current.name { 
 
     static mapping = { 
+        dynamicUpdate true
         cache include: "non-lazy" 
         columns {
             xmlcache type:'text'

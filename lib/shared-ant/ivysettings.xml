@@ -1,0 +1,20 @@
+<?xml version="1.0" encoding="ISO-8859-1"?>
+<ivysettings>
+  <settings defaultResolver="roundup.chi"/>
+  <credentials host="norma.ucsf.edu" realm="CHI Contrib" username="public.chi" passwd="tesla1" />
+  <resolvers>
+    <packager name="roundup" buildRoot="${user.home}/.ivy2/packager/build" resourceCache="${user.home}/.ivy2/packager/cache">
+        <ivy pattern="http://ivyroundup.googlecode.com/svn/trunk/repo/modules/[organisation]/[module]/[revision]/ivy.xml"/>
+        <artifact pattern="http://ivyroundup.googlecode.com/svn/trunk/repo/modules/[organisation]/[module]/[revision]/packager.xml"/>
+    </packager>
+    <chain name="roundup.chi">
+      <url name="chi">
+        <artifact pattern="https://norma.ucsf.edu/rep/chi-contrib/trunk/[organisation]/[artifact]-[revision].[ext]" />
+        <artifact pattern="https://norma.ucsf.edu/rep/chi-contrib/trunk/[organisation]/[artifact][revision].[ext]" />
+        <artifact pattern="https://norma.ucsf.edu/rep/chi-contrib/trunk/[module]/[artifact]-[revision].[ext]" />
+        <artifact pattern="https://norma.ucsf.edu/rep/chi-contrib/trunk/[module]/[artifact][revision].[ext]" />
+      </url>
+      <resolver ref="roundup"/>
+    </chain>
+  </resolvers>
+</ivysettings>

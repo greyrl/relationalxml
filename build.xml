@@ -1,6 +1,9 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <project name="persistence" default="all" basedir=".">
-
+	
+    <!-- Set to 'true' for debugging this app -->
+    <property name="javac.debug" value="false"/>
+	
     <!-- import the core build tasks -->
     <import file="lib/shared-ant/build-core.xml"/>
 
@@ -11,6 +14,7 @@
     <property name="groovy.src.dir" value="src/groovy"/>
     <property name="groovy.test.dir" value="test/groovy"/>
     <property name="lib.dir" value="lib"/>
+    <property name="ivy.conf" value="${lib.dir}/shared-ant/ivysettings.xml"/>
     <property name="lib.name" value="chi-persistence.jar"/>
     <property name="log.dir" value="logs"/>
     <property name="log.file" value="${log.dir}/chi.log"/>
@@ -21,43 +25,12 @@
 
     <!-- define the build and war libraries -->
     <patternset id="library.pattern">
-        <include name="antlr/antlr-2.7.6.jar"/>
-        <include name="asm/asm-1.5.3.jar"/>
-        <include name="c3p0/c3p0-0.9.0.jar"/>
-        <include name="chi/chi-core-1.0.jar"/>
-        <include name="chi/chi-exml-1.0.jar"/>
-        <include name="cglib/cglib-2.1.3.jar"/>
-        <include name="commons-codec/commons-codec-1.3.jar"/>
-        <include name="commons-collections/commons-collections-3.2.jar"/>
-        <include name="commons-fileupload/commons-fileupload-1.1.jar"/>
-        <include name="commons-lang/commons-lang-2.3.jar"/>
-        <include name="commons-logging/commons-logging-1.1.jar"/>
-        <include name="derby/derby-10.2.1.6.jar"/>
-        <include name="dom4j/dom4j-1.6.1.jar"/>
-        <include name="ehcache/ehcache-1.2.3.jar"/>
-        <include name="hibernate/hibernate3.2.1.jar"/>
-        <include name="isorelax/isorelax-20041111.jar"/>
-        <include name="jaxen/jaxen-1.1.1.jar"/>
-        <include name="jetty/servlet-api-2.5-6.0.1.jar"/>
-        <include name="jta/jta.jar"/>
-        <include name="junit/junit-4.1.jar"/>
-        <include name="grails/grails-core-1.0.1.jar"/>
-        <include name="grails/grails-gorm-1.0.1.jar"/>
-        <include name="grails/grails-spring-1.0.1.jar"/>
-        <include name="grails/grails-web-1.0.1.jar"/>
-        <include name="groovy/groovy-all-1.6.3.jar"/>
-        <include name="log4j/log4j-1.2.14.jar"/>
-        <include name="msv/msv-20080102.jar"/>
-        <include name="msv/relaxngDatatype-20080102.jar"/>
-        <include name="msv/xsdlib-20080102.jar"/>
-        <include name="saxon/saxon9.0.0.3.jar"/>
-        <include name="saxon/saxon9.0.0.3-dom.jar"/>
-        <include name="sitemesh/sitemesh-2.3.jar"/>
-        <include name="spring/spring-2.5.1.jar"/>
+        <include name="*.jar"/>
+        <include name="ivy/*.jar"/>
     </patternset>
 
     <!-- compile certain items needed by groovy -->
-    <target name="custom.compile" depends="build.path">
+    <target name="custom.compile" depends="ivy.depends">
         <javac deprecation="true" destdir="${build.dir}/classes">
            <src path="${src.dir}"/>
            <include name="org/chi/persistence/*"/>

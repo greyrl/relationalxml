@@ -22,14 +22,19 @@ import org.xml.sax.XMLReader;
  */
 class MultiSort implements Comparator<Object> {
 
+    private static Class ucclass;
+    private static Method ucget;
+
     private XMLReader reader;
     private HashMap<String, CacheItem> cache = new HashMap<String, CacheItem>();
+    private Object[] obja = new Object[1];
 
     /**
      * Constructor with XML reader
      * @param reader
      */
     public MultiSort(XMLReader reader) {
+        if (ucclass == null || ucget == null) loaducget();
         this.reader = reader;
     }
 
@@ -173,13 +178,32 @@ class MultiSort implements Comparator<Object> {
             CacheItem result = cache.get(id);
             if (result != null) return result;
             // TODO generate XML if database cache is not present...
-            byte[] cxml = getField(obj, "getXmlcache").getBytes();
+            // byte[] cxml = getField(obj, "getXmlcache").getBytes();
+            obja[0] = obj;
+            byte[] cxml = ucget.invoke(obj, obja).toString().getBytes();
             reader.parse(new InputSource(new ByteArrayInputStream(cxml)));
             cache.put(id, ((ItemHandler) reader.getContentHandler()).item);
             return cache.get(id);
         } catch (Exception e) {
             Log.exception("Unable to generate cache item", e);
             return new CacheItem();
+        }
+    }
+
+    /**
+     * This is nasty but necessary, because MultiSort is needed by the groovy,
+     * classes, which is compiled after MultiSort. Very much a chicken and egg...
+     * @throws RuntimeException
+     */
+    private void loaducget() {
+        synchronized(cache) {
+            if (ucclass != null && ucget != null) return;
+            try {
+                ucclass = Class.forName("org.chi.persistence.util.UpdateCache");
+                ucget = ucclass.getMethod("get", new Class[] { Object.class });
+            } catch (Exception e) {
+                throw new RuntimeException("Unable to load UpdateCache get method", e);
+            }
         }
     }
 

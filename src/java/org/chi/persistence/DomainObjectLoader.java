@@ -72,6 +72,8 @@ public class DomainObjectLoader implements GrailsDomainClassInjector {
         injectToStringMethod(classNode);
         injectAssociations(classNode);
     }
+
+    public void performInjectionOnAnnotatedEntity(ClassNode classNode)  {}
     
     /**
      * Inject associated domain objects
@@ -209,7 +211,8 @@ public class DomainObjectLoader implements GrailsDomainClassInjector {
     private boolean containsDomainAnnotation(ClassNode classNode) {
         for (Object next : getAnnotations(classNode)) {
             AnnotationNode a = (AnnotationNode) next;
-            if (a.getClassNode().getName().equals("DomainClass")) return true;
+            String name = a.getClassNode().getNameWithoutPackage();
+            if (name.equals("DomainObjectLoader$DomainClass")) return true;
         }
         return false;
     }

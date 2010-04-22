@@ -2,6 +2,7 @@
 <project name="build.core.import" basedir="../">
 
     <property environment="env"/>
+    <property name="javac.debug" value="false"/>
 
     <!-- ==================== BASIC TARGETS ==================== -->
 
@@ -26,7 +27,7 @@
     <target name="build.custom.task.java" depends="build.path">
         <fail unless="custom.dir">You must define variable "custom.dir"</fail>
         <mkdir dir="${build.dir}/classes"/>
-        <javac deprecation="true" destdir="${build.dir}/classes">
+        <javac includeantruntime="true" debug="${javac.debug}" deprecation="true" destdir="${build.dir}/classes">
            <src path="${src.dir}"/>
            <classpath refid="build.classpath"/>
            <include name="${custom.dir}"/>
@@ -71,10 +72,37 @@
         <fail unless="build.dir">You must define variable "build.dir"</fail>
     </target>
 
+    <!-- download ivy dependencies -->
+    <target name="ivy.depends" depends="build.path">
+        <fail unless="lib.dir">You must define variable "lib.dir"</fail>
+        <fail unless="ivy.conf">You must define variable "ivy.conf"</fail>
+        <typedef name="ivy-settings" classname="org.apache.ivy.ant.IvyAntSettings" 
+                loaderRef="ivy.loader">
+            <classpath refid="build.classpath"/>
+        </typedef>
+        <taskdef name="ivy-retrieve" classname="org.apache.ivy.ant.IvyRetrieve" 
+                loaderRef="ivy.loader">
+            <classpath refid="build.classpath"/>
+        </taskdef>
+        <property name="ivy.dir" value="${lib.dir}"/>
+        <property name="ivy.pattern" value="[artifact]-[revision](-[classified]).[ext]"/>
+        <ivy-settings id="ivy.settings" file="${ivy.conf}" />
+        <ivy-retrieve log="quiet" settingsRef="ivy.settings" type="jar"
+            pattern="${ivy.dir}/${ivy.pattern}"/>
+    </target>
+
+    <!-- cleanup after ivy installation -->
+    <target name="post.ivy.cleanup" depends="define.custom.tasks">
+        <taskdef name="clean-libs" classname="org.chi.util.ant.CleanLibsTask"> 
+            <classpath refid="build.classpath"/>
+        </taskdef>
+        <clean-libs libdir="${lib.dir}" webdir="${web.dir}"/>
+    </target>
+
     <!-- compile the module -->
     <target name="compile" depends="compile.prep">
         <mkdir dir="${build.dir}/classes"/>
-        <javac deprecation="true" destdir="${build.dir}/classes">
+        <javac includeantruntime="true" debug="${javac.debug}" deprecation="true" destdir="${build.dir}/classes">
            <src path="${src.dir}"/>
            <classpath refid="build.classpath"/>
         </javac>
@@ -144,7 +172,7 @@
         <fail unless="check.path">You must define "test.classpath"</fail>
         <mkdir dir="${test.reports}"/>
         <!-- compile the tests -->
-        <javac destdir="${build.dir}/classes">
+        <javac includeantruntime="true" debug="${javac.debug}" destdir="${build.dir}/classes">
            <src path="${test.dir}"/>
            <classpath refid="test.classpath"/>
         </javac>
@@ -183,8 +211,13 @@
     <target name="ctest" depends="compile, build.etc.path">
         <taskdef name="choosetest"
                 classname="org.chi.util.ant.ChooseTestTask">
-            <classpath refid="build.classpath"/>
+            <classpath refid="build.etc.classpath"/>
         </taskdef>
+        <!-- compile the tests -->
+        <javac includeantruntime="true" debug="${javac.debug}" destdir="${build.dir}/classes">
+           <src path="${test.dir}"/>
+           <classpath refid="build.etc.classpath"/>
+        </javac>
         <choosetest var="chosenTestVar">
             <fileset dir="${build.dir}/classes">
                 <include name="**/*Test.class"/>
@@ -201,12 +234,17 @@
     <target name="citest" depends="compile, build.etc.path">
         <taskdef name="choosetest"
                 classname="org.chi.util.ant.ChooseIndTestTask">
-            <classpath refid="build.classpath"/>
+            <classpath refid="build.etc.classpath"/>
         </taskdef>
         <taskdef name="runtest"
                 classname="org.chi.util.ant.RunIndTestTask">
             <classpath refid="build.classpath"/>
         </taskdef>
+        <!-- compile the tests -->
+        <javac includeantruntime="true" debug="${javac.debug}" destdir="${build.dir}/classes">
+           <src path="${test.dir}"/>
+           <classpath refid="build.etc.classpath"/>
+        </javac>
         <choosetest var="chosenTestVar" ivar="choseIndTestVar">
             <fileset dir="${build.dir}/classes">
                 <include name="**/*Test.class"/>
@@ -346,6 +384,37 @@
             error="${log.dir}/link.error.txt"/>
     </target>
 
+    <!-- install javascript libraries -->
+    <target name="install.js">
+        <condition property="script.pattern.check">
+            <isreference refid="script.pattern"/>
+        </condition>
+        <fail unless="script.pattern.check"
+            >You must define patternset "script.pattern"</fail>
+        <mkdir dir="${web.dir}/script"/>
+        <copy todir="${web.dir}/script" verbose="true">
+            <fileset dir="${lib.dir}">
+                 <patternset refid="script.pattern"/>
+            </fileset>
+        </copy>
+    </target>
+
+    <!-- install specific javascript libraries -->
+    <target name="install.versioned.js">
+        <condition property="script.pattern.check">
+            <isreference refid="versioned.script.pattern"/>
+        </condition>
+        <fail unless="script.pattern.check"
+            >You must define patternset "versioned.script.pattern"</fail>
+        <copy todir="${web.dir}/script" verbose="true">
+            <!-- e.g. jquery.1.2.js to jquery.js -->
+            <regexpmapper from="^(.*)/([a-zA-Z\.]*)\..*\.js" to="\1/\2.js" handledirsep="true"/>
+            <fileset dir="${lib.dir}">
+                 <patternset refid="versioned.script.pattern"/>
+            </fileset>
+        </copy>
+    </target>
+
     <!-- ==================== DATABASE TARGETS ================= -->
 
     <!-- check to see if the derby database exists already -->
@@ -356,6 +425,7 @@
 
     <!-- build a derby database from a script -->
     <target name="build.derby.db" depends="define.custom.tasks"> 
+        <fail unless="db.dir">You must define variable "db.dir"</fail>
         <fail unless="sql.file">You must define variable "sql.file"</fail>
         <sql driver="org.apache.derby.jdbc.EmbeddedDriver" src="${sql.file}"
             url="jdbc:derby:${db.dir};create=true"
@@ -401,7 +471,9 @@
         <taskdef name="copy-data" classpathref="build.classpath"
             classname="org.chi.db.CopyDbData" />
         <copy-data from="${copy.db.from}" to="${copy.db.to}" 
-            skiptables="${copy.skip.tables}"/>
+            fromprops="${copy.db.fprops}" toprops="${copy.db.tprops}"
+            skiptables="${copy.skip.tables}" 
+            extraStatement="${copy.extra.statement}"/>
     </target>
 
     <!-- run sql remote to transfer transactions -->
@@ -416,19 +488,23 @@
         </exec>
     </target>
 
-    <!-- install javascript libraries -->
-    <target name="install.js">
-        <condition property="script.pattern.check">
-            <isreference refid="script.pattern"/>
-        </condition>
-        <fail unless="script.pattern.check"
-            >You must define patternset "script.pattern"</fail>
-        <mkdir dir="${web.dir}/script"/>
-        <copy todir="${web.dir}/script" verbose="true">
-            <fileset dir="${lib.dir}">
-                 <patternset refid="script.pattern"/>
-            </fileset>
-        </copy>
+    <target name="send.mysql.db" depends="build.path">
+        <fail unless="send.db.name"
+            >You must define variable "send.db.name"</fail>
+        <fail unless="upd.db.user"
+            >You must define variable "upd.db.user"</fail>
+        <fail unless="upd.db.pass"
+            >You must define variable "upd.db.pass"</fail>
+        <fail unless="upd.db.host"
+            >You must define variable "upd.db.host"</fail>
+        <fail unless="upd.db.name"
+            >You must define variable "upd.db.name"</fail>
+        <taskdef name="senddb" classpathref="build.classpath"
+            classname="org.chi.util.ant.MysqlDBCopyTask" /> 
+        <senddb path="/chi/python/mysqlreplicate.py"
+            logdir="/chi/mysql/data" logdb="${send.db.name}"
+            user="${upd.db.user}" password="${upd.db.pass}" 
+            host="${upd.db.host}" db="${upd.db.name}"/>
     </target>
 
     <!-- ==================== HIBERNATE TARGETS ================ -->
@@ -634,6 +710,43 @@
         <refresh-cache hibernateconfig="${hibernate.cfg.xml}" 
             schemadir="${schema.dir}" queryfile="${query.file}"
             updatequery="${update.query}"/>
+    </target>
+
+    <!-- ==================== WEB SERVICE TARGETS ============== -->
+
+    <target name="ws.gen" depends="build.etc.path">
+        <fail unless="ws.sei">
+            You must define variable "ws.sei"</fail>
+        <taskdef name="wsgen" classpathref="build.classpath"
+            classname="com.sun.tools.ws.ant.WsGen"/> 
+        <mkdir dir="${build.dir}/wsclient"/>
+        <!-- TODO figure out way to specify more than one class -->
+        <wsgen sei="${ws.sei}" destdir="${build.dir}/wsclient"
+            classpathref="build.classpath" genwsdl="true" keep="true"/>
+    </target>
+
+    <target name="ws.import" depends="build.etc.path">
+        <fail unless="ws.build.dir">
+            You must define variable "ws.build.dir"</fail>
+        <fail unless="ws.package">
+            You must define variable "ws.package"</fail>
+        <fail unless="ws.wsdl">
+            You must define variable "ws.wsdl"</fail>
+        <taskdef name="wsimport" classpathref="build.classpath"
+            classname="com.sun.tools.ws.ant.WsImport"/> 
+        <mkdir dir="${build.dir}/classes/${ws.build.dir}"/>
+        <!-- TODO figure out way to specify more than one schema -->
+        <wsimport debug="true" destdir="${build.dir}/classes"
+                wsdl="${ws.wsdl}" keep="false" package="${ws.package}">
+            <produces dir="${build.dir}/classes/${ws.build.dir}" includes="*" />
+        </wsimport>
+    </target>
+
+    <!-- clean all the build artifacts -->
+    <target name="ws.clean" depends="compile.prep, clean">
+        <echo message="cleaning ws class files..."/>
+        <!-- delete a jar if it exists -->
+        <delete file="${build.dir}/lib/${ws.lib.name}"/>
     </target>
 
 </project>
