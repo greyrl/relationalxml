@@ -1,47 +1,47 @@
 Testsuite: org.chi.persistence.LockTest
 Tests run: 2, Failures: 0, Errors: 0, Time elapsed: 7.227 sec
 ------------- Standard Output ---------------
-SyncLock.run(): id 9, running 14, priorirty 100
-SyncLock.run(): id 10, running 14, priorirty 500
-SyncLock.run(): id 7, running 14, priorirty 100
-SyncLock.run(): id 11, running 14, priorirty 100
-SyncLock.run(): id 0, running 14, priorirty 500
-SyncLock.run(): id 3, running 14, priorirty 100
-SyncLock.run(): id 2, running 14, priorirty 500
-SyncLock.run(): id 1, running 14, priorirty 100
-SyncLock.run(): id 12, running 14, priorirty 500
-SyncLock.run(): id 8, running 14, priorirty 500
-SyncLock.run(): id 5, running 14, priorirty 100
-SyncLock.run(): id 6, running 14, priorirty 500
 SyncLock.run(): id 13, running 14, priorirty 100
+SyncLock.run(): id 2, running 14, priorirty 500
+SyncLock.run(): id 8, running 14, priorirty 500
+SyncLock.run(): id 11, running 14, priorirty 100
+SyncLock.run(): id 10, running 14, priorirty 500
+SyncLock.run(): id 9, running 14, priorirty 100
+SyncLock.run(): id 7, running 14, priorirty 100
 SyncLock.run(): id 4, running 14, priorirty 500
-SyncLock.run(): finish id 10, count 13
+SyncLock.run(): id 3, running 14, priorirty 100
+SyncLock.run(): id 5, running 14, priorirty 100
+SyncLock.run(): id 1, running 14, priorirty 100
+SyncLock.run(): id 0, running 14, priorirty 500
+SyncLock.run(): id 6, running 14, priorirty 500
+SyncLock.run(): id 12, running 14, priorirty 500
+SyncLock.run(): finish id 0, count 13
 SyncLock.run(): finish id 13, count 12
-SyncLock.run(): finish id 7, count 11
+SyncLock.run(): finish id 3, count 11
 SyncLock.run(): finish id 11, count 10
-SyncLock.run(): finish id 1, count 9
-SyncLock.run(): finish id 3, count 8
-SyncLock.run(): finish id 9, count 7
-SyncLock.run(): finish id 5, count 6
-SyncLock.run(): finish id 6, count 5
-SyncLock.run(): finish id 12, count 4
-SyncLock.run(): finish id 8, count 3
-SyncLock.run(): finish id 4, count 2
-SyncLock.run(): finish id 2, count 1
-SyncLock.run(): finish id 0, count 0
+SyncLock.run(): finish id 7, count 9
+SyncLock.run(): finish id 5, count 8
+SyncLock.run(): finish id 1, count 7
+SyncLock.run(): finish id 9, count 6
+SyncLock.run(): finish id 2, count 5
+SyncLock.run(): finish id 6, count 4
+SyncLock.run(): finish id 10, count 3
+SyncLock.run(): finish id 8, count 2
+SyncLock.run(): finish id 12, count 1
+SyncLock.run(): finish id 4, count 0
 SyncLock.run(): id 0, running 2, priorirty 1000
-SyncLock.run(): id 1, running 3, priorirty 1000
-SyncLock.run(): id 2, running 6, priorirty 1000
+SyncLock.run(): id 1, running 2, priorirty 1000
+SyncLock.run(): id 2, running 4, priorirty 1000
+SyncLock.run(): id 3, running 5, priorirty 1000
 SyncLock.run(): id 4, running 6, priorirty 1000
-SyncLock.run(): id 3, running 6, priorirty 1000
 SyncLock.run(): id 5, running 6, priorirty 1000
 SyncLock.run(): finish id 5, count 5
-SyncLock.run(): finish id 0, count 4
+SyncLock.run(): finish id 1, count 4
 SyncLock.run(): finish id 2, count 3
-SyncLock.run(): finish id 4, count 2
-SyncLock.run(): finish id 1, count 1
-SyncLock.run(): finish id 3, count 0
+SyncLock.run(): finish id 3, count 2
+SyncLock.run(): finish id 4, count 1
+SyncLock.run(): finish id 0, count 0
 ------------- ---------------- ---------------
 
-Testcase: testBasicLock took 5.657 sec
-Testcase: testDeadLock took 1.511 sec
+Testcase: testBasicLock took 5.695 sec
+Testcase: testDeadLock took 1.517 sec

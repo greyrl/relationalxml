@@ -1,5 +1,5 @@
 Testsuite: org.chi.persistence.RelaxSchemaGroovyTest
-Tests run: 21, Failures: 0, Errors: 0, Time elapsed: 19.21 sec
+Tests run: 21, Failures: 0, Errors: 0, Time elapsed: 15.708 sec
 ------------- Standard Output ---------------
 RelaxSchema.parse() : parse [test/schema/relax/Boolean.rng]
 RelaxSchema.parse() : parse [test/schema/relax/Complex.rng]
@@ -30,34 +30,34 @@ Initial address size 1
 Added address size 2
 result <query sql="from Statistics where id = ?" result-count="1">
 
-<statistics accessed="1000" size="100" id="3211270">
- <last-updated>2010-02-01T11:29:08</last-updated>
- <created>2010-02-01T11:29:07</created>
+<statistics accessed="1000" size="100" id="5308422">
+ <last-updated>2010-04-21T21:37:15</last-updated>
+ <created>2010-04-21T21:37:15</created>
 </statistics>
 </query>
-Found 120 address book(s)
-Load ID : 3309581 Query ID : 3309581
+Found 192 address book(s)
+Load ID : 5406733 Query ID : 5406733
 Parse error occurred "the length of the value is 261, but the required maximum is 100." on line 8, column 20
 ------------- ---------------- ---------------
 
-Testcase: testSave took 12.07 sec
-Testcase: testSaveAndAddChild took 0.676 sec
-Testcase: testUpdate took 0.436 sec
-Testcase: testUpdateTiming took 1.231 sec
-Testcase: testUpdateAttribute took 0.295 sec
-Testcase: testUpdateChild took 0.23 sec
-Testcase: testUpdateChildThroughParent took 0.19 sec
-Testcase: testUpdateComplexChildThroughParent took 0.282 sec
-Testcase: testReuse took 0.209 sec
-Testcase: testCopy took 0.59 sec
-Testcase: testQuery took 0.449 sec
-Testcase: testNativeQuery took 0.117 sec
-Testcase: testQueryMultiple took 0.073 sec
+Testcase: testSave took 8.434 sec
+Testcase: testSaveAndAddChild took 0.602 sec
+Testcase: testUpdate took 0.477 sec
+Testcase: testUpdateTiming took 1.491 sec
+Testcase: testUpdateAttribute took 0.209 sec
+Testcase: testUpdateChild took 0.197 sec
+Testcase: testUpdateChildThroughParent took 0.17 sec
+Testcase: testUpdateComplexChildThroughParent took 0.306 sec
+Testcase: testReuse took 0.199 sec
+Testcase: testCopy took 0.687 sec
+Testcase: testQuery took 0.284 sec
+Testcase: testNativeQuery took 0.133 sec
+Testcase: testQueryMultiple took 0.138 sec
 Testcase: testQueryList took 0.102 sec
-Testcase: testSwitchOrder took 1.175 sec
-Testcase: testInterleave took 0.309 sec
-Testcase: testRemove took 0.26 sec
-Testcase: testError took 0.031 sec
-Testcase: testLock took 0.267 sec
-Testcase: testDeadlock took 0.144 sec
-Testcase: testBoolean took 0.047 sec
+Testcase: testSwitchOrder took 1.153 sec
+Testcase: testInterleave took 0.226 sec
+Testcase: testRemove took 0.213 sec
+Testcase: testError took 0.04 sec
+Testcase: testLock took 0.265 sec
+Testcase: testDeadlock took 0.163 sec
+Testcase: testBoolean took 0.059 sec

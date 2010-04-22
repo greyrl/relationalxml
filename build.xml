@@ -26,6 +26,7 @@
     <!-- define the build and war libraries -->
     <patternset id="library.pattern">
         <include name="*.jar"/>
+        <include name="chi/*.jar"/>
         <include name="ivy/*.jar"/>
     </patternset>
 
