@@ -168,7 +168,7 @@ class XmlSerializer extends HibernateTools implements GroovyInterceptable {
             Log.error "Unable to find query [${queryId}]"
             return null
         }
-        def sql = query.@sql ? query.@sql : query.sql[0].text()
+        def sql = query.'@sql' ? query.'@sql' : query.sql[0].text()
         assert sql
         def _native = query["@native"]
         try {
@@ -186,7 +186,7 @@ class XmlSerializer extends HibernateTools implements GroovyInterceptable {
                 ParameterSet pset = new ParameterSet(
                     serial:this, values:params, query:hquery)
                 query.param.each() { pset.setParam(it) }
-                if (Boolean.valueOf(query.@cache)) hquery.setCacheable(true)
+                if (Boolean.valueOf(query.'@cache')) hquery.setCacheable(true)
                 long timing = System.currentTimeMillis()
                 def alias = hquery in SQLQueryImpl ? null : hquery.returnAliases
                 def alen = badAlias(alias) ? 0 : alias.size() 

@@ -306,7 +306,9 @@ class RelaxSchemaGroovyTest extends GroovyTestCase {
         def root = serial.sqlLoad("query.by.id", obj.id.toString())
         root = new XmlParser().parseText(root)
         assert root['address-book'] && root['address-book'].size() == 1
-        assert "set another name".equals(root['address-book'][0].name.text())
+        // oh groovy...
+        def name = root['address-book'].get(0).get('name').value[0][0]
+        assert "set another name".equals(name)
     }
 
     void testUpdateTiming() {
@@ -337,8 +339,8 @@ class RelaxSchemaGroovyTest extends GroovyTestCase {
         serial.save(serial.serialize(obj))
         def root = serial.sqlLoad("query.by.id", obj.id.toString())
         root = new XmlParser().parseText(root)
-        def accessed = root['address-book'].statistics.@accessed[0]
-        assert accessed && accessed.equals("200")
+        def accessed = root['address-book'].statistics.'@accessed'[0]
+        assert accessed && accessed[0].equals("200")
     }
 
     void testUpdateChild() {
@@ -352,7 +354,8 @@ class RelaxSchemaGroovyTest extends GroovyTestCase {
         serial.save(serial.serialize(fav))
         def newfav = serial.sqlLoad("query.by.id", obj.id.toString())
         newfav = new XmlParser().parseText(newfav)["address-book"].favorite[0]
-        assert newfav.name && newfav.name.text().equals(fav.name)
+        newfav = newfav.get(0).value[0]
+        assert newfav && newfav.value[0].equals(fav.name)
     }
 
     void testUpdateChildThroughParent() {
@@ -429,8 +432,8 @@ class RelaxSchemaGroovyTest extends GroovyTestCase {
             serial.sqlLoad("query.by.id", id.toString()))
         assert root["address-book"].size() == 1
         def addressBook = root['address-book'][0]
-        assert addressBook.@id.toString().equals(id.toString())
-        println "Load ID : ${addressBook.@id} Query ID : ${id}"
+        assert addressBook.'@id'.toString().equals(id.toString())
+        println "Load ID : ${addressBook.'@id'} Query ID : ${id}"
     }
 
     void testQueryList() {

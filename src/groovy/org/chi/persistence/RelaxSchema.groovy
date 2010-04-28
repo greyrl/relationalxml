@@ -169,10 +169,10 @@ class RelaxSchema implements SchemaParser {
      * @param node
      */
     private ref(node) { 
-        def cname = node.@name
+        def cname = node.'@name'
         if (! cname) return
         def refelement = root.find {
-            return "define".equals(name(it)) && cname.equals(it.@name)
+            return "define".equals(name(it)) && cname.equals(it.'@name')
         }
         if (! refelement || refelement.children().size() != 1) return
         Log.debug "RelaxSchema.ref() : follow [${cname}]"
@@ -189,7 +189,7 @@ class RelaxSchema implements SchemaParser {
      * @param node
      */
     private element(node) {
-        def name = PersistUtils.camelCase(node.@name, true)
+        def name = PersistUtils.camelCase(node.'@name', true)
         addBaseFields(node)
         current = new RelaxClass(name, current)
         Log.debug "RelaxSchema.recurse() : element ${name}"
@@ -208,7 +208,7 @@ class RelaxSchema implements SchemaParser {
      * @param node
      */
     private attribute(node) {
-        attribute = node.@name
+        attribute = node.'@name'
         // if the node is empty, define the value
         if (node.children().size() == 0) 
             node.appendNode(new QName(nsStr, "text"))
@@ -239,7 +239,7 @@ class RelaxSchema implements SchemaParser {
         def field
         if (attribute) field = createFieldFromAttribute()
         else field = createFieldFromClass()
-        if (node.@type) field.type = node.@type
+        if (node.'@type') field.type = node.'@type'
     }
 
     /** 
@@ -267,7 +267,7 @@ class RelaxSchema implements SchemaParser {
      * @param node
      */
     private param(node) {
-        def n = node.@name
+        def n = node.'@name'
         if (! n) return
         // get the last assigned field
         def field = current.parent.fields
@@ -355,7 +355,7 @@ class RelaxSchema implements SchemaParser {
      * @param node
      */
     private externalRef(node) {
-        new RelaxClass(node.@href, current, true)
+        new RelaxClass(node.'@href', current, true)
     }
 
     //--------------- APPEND BASE FIELDS ------
@@ -374,11 +374,11 @@ class RelaxSchema implements SchemaParser {
                 return check.equals(n);
             }
         }) return
-        Log.debug "RelaxSchema.addBaseFields() : evaluating ${node.@name}"
+        Log.debug "RelaxSchema.addBaseFields() : evaluating ${node.'@name'}"
         addFields.each() { name ->
             Log.debug "RelaxSchema.addBaseFields() : check field ${name}"
             // if it already has the field, ignore it
-            if (node.depthFirst().any() { return name.equals(it.@name) }) return
+            if (node.depthFirst().any() { return name.equals(it.'@name') }) return
             Log.debug "RelaxSchema.addBaseFields() : add field ${name}"
             name = "append" + PersistUtils.camelCase(name, true)
             if (mclass.hasMetaMethod(name)) this.invokeMethod(name, node)
@@ -394,10 +394,10 @@ class RelaxSchema implements SchemaParser {
         def optional = addOptional(node)
         optional.appendNode(new QName(nsStr, "attribute"))
         def attribute = optional[ns.attribute][0]
-        attribute.@name = "id"
+        attribute.'@name' = "id"
         attribute.appendNode(new QName(nsStr, "data"))
         def data = attribute[ns.data][0]
-        data.@type = "long"
+        data.'@type' = "long"
     }
 
     /**
@@ -408,10 +408,10 @@ class RelaxSchema implements SchemaParser {
         def optional = addOptional(node)
         optional.appendNode(new QName(nsStr, "element"))
         def element = optional[ns.element][0]
-        element.@name = "created"
+        element.'@name' = "created"
         element.appendNode(new QName(nsStr, "data"))
         def data = element[ns.data][0]
-        data.@type = "dateTime"
+        data.'@type' = "dateTime"
     }
 
     /**
@@ -422,10 +422,10 @@ class RelaxSchema implements SchemaParser {
         def optional = addOptional(node)
         optional.appendNode(new QName(nsStr, "element"))
         def element = optional[ns.element][0]
-        element.@name = "last-updated"
+        element.'@name' = "last-updated"
         element.appendNode(new QName(nsStr, "data"))
         def data = element[ns.data][0]
-        data.@type = "dateTime"
+        data.'@type' = "dateTime"
     }
 
     /**

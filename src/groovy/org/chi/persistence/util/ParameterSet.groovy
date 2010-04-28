@@ -19,9 +19,9 @@ class ParameterSet {
      * @param param
      */
     void setParam(Node param) {
-        assert param.@type
-        Class type = Class.forName(param.@type)
-        String named = param.@name
+        assert param.'@type'
+        Class type = Class.forName(param.'@type')
+        String named = param.'@name'
         if (named) query.setParameterList(named, extractMulti(type))
         else query.setParameter(current, extractValue(type))
     }

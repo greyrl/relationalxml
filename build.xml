@@ -5,7 +5,7 @@
     <property name="javac.debug" value="false"/>
 	
     <!-- import the core build tasks -->
-    <import file="lib/shared-ant/build-core.xml"/>
+    <import file="etc/build-core.xml"/>
 
     <property name="build.dir" value="bin"/>
     <property name="db.dir" value="derby-db"/>
@@ -13,8 +13,8 @@
     <property name="etc.dir" value="etc"/>
     <property name="groovy.src.dir" value="src/groovy"/>
     <property name="groovy.test.dir" value="test/groovy"/>
+    <property name="ivy.conf" value="${etc.dir}/ivysettings.xml"/>
     <property name="lib.dir" value="lib"/>
-    <property name="ivy.conf" value="${lib.dir}/shared-ant/ivysettings.xml"/>
     <property name="lib.name" value="chi-persistence.jar"/>
     <property name="log.dir" value="logs"/>
     <property name="log.file" value="${log.dir}/chi.log"/>
@@ -26,7 +26,7 @@
     <!-- define the build and war libraries -->
     <patternset id="library.pattern">
         <include name="*.jar"/>
-        <include name="chi/*.jar"/>
+        <include name="saved/*.jar"/>
         <include name="ivy/*.jar"/>
     </patternset>
 

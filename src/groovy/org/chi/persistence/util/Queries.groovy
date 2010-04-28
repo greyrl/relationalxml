@@ -30,7 +30,7 @@ class Queries {
         if (! file) return null
         if (modified()) load()
         return queries.find() { 
-            return it.@id && it.@id.equals(queryId) 
+            return it.'@id' && it.'@id'.equals(queryId) 
         }
     }
 
