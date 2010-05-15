@@ -8,11 +8,13 @@ jQuery.dom = {
     XmlGen : Class.extend({
 
         doc: false,
+        log: true,
 
         _altNameAtt: "altname",
         _attCls:  "att",
         _complexCls: "complex",
         _disabledCls:  "disabled",
+        _idAtt: "id",
         _insertCls: "insert",
         _nameAtt: "name",
         _primitiveCls: "primitive",
@@ -23,13 +25,14 @@ jQuery.dom = {
 
         // process a single node that has child values
         generate: function(node, current) {
-            if (! node || node.nodeType != jQuery.dom.ELEMENT_NODE) return false;
+            node = $(node);
+            if (! this._isElement(node)) return false;
             if (! current) current = this.doc.firstChild;
             var add = this._addNode(node, current);
             if (add) current = add;
             if (! current) return false;
-            jQuery.each(node.childNodes, jQuery.hitch(this, function(id, next) {
-                var result = this._process(next, current);
+            jQuery.each(node[0].childNodes, jQuery.hitch(this, function(id, next) {
+                var result = this._process($(next), current);
                 if (result && ! result[0]) current.appendChild(result);
                 else jQuery.each(result, function(id, next) {
                     current.appendChild(next);
@@ -44,13 +47,18 @@ jQuery.dom = {
             this.doc = jQuery.dom.createDocument("<wrapper/>");
         },
 
+        // test to make sure a node is an element
+        _isElement: function(node) {
+            return node[0] && node[0].nodeType == jQuery.dom.ELEMENT_NODE;
+        },
+
         // build a new element if necessary
         _addNode: function(node, current) {
-            if (! $(node).hasClass(this._complexCls)) return false;
-            if ($(node).hasClass(this._disabledCls)) return false;
-            var name = $(node).attr(this._nameAtt);
+            if (! node.hasClass(this._complexCls)) return false;
+            if (node.hasClass(this._disabledCls)) return false;
+            var name = this._name(node);
             if (! name) {
-                var inner = node.parentNode.innerHTML; 
+                var inner = node[0].parentNode.innerHTML; 
                 throw "Node in block [" + inner + "] defined without name";
             }
             var _new = this.doc.createElement(name);
@@ -60,21 +68,19 @@ jQuery.dom = {
 
         // process a child
         _process: function(node, current) {
-            if (! node || node.nodeType != jQuery.dom.ELEMENT_NODE) return false;
-            if ($(node).hasClass(this._disabledCls)) return false;
+            if (! this._isElement(node)) return false;
+            if (node.hasClass(this._disabledCls)) return false;
             // if there are children, recursively process
             if (jQuery.dom.hasChildren(node)) {
-                var nname = $(node).attr("name");
+                var nname = this._name(node);
                 if (nname)
                     this._log("_process", "process children on [" + nname + "]");
                 return this.generate(node, current);
             }
             // follow an insert
-            if ($(node).hasClass(this._insertCls))
-                return this._processInsert($(node).attr("name"));
-            // allow for overriding name attribute
-            var name = $(node).attr(this._altNameAtt);
-            if (! name) name = $(node).attr(this._nameAtt);
+            if (node.hasClass(this._insertCls))
+                return this._processInsert(this._name(node));
+            var name = this._name(node);
             var value = this._value(node);
             if (! name || ! value) return false; 
             if ($(node).hasClass(this._primitiveCls)) {
@@ -97,32 +103,41 @@ jQuery.dom = {
             this._log("_processInsert", "process insert [" + query + "]");
             var result = new Array();
             $(query).each(jQuery.hitch(this, function(id, insert) {
-                var name = $(insert).attr("name");
+                insert = $(insert);
+                var name = this._name(insert);
                 this._log("_process", "follow name [" + name + "]");
                 var _new = this._process(insert, null);
                 if (_new) result.push(_new);
             }));
             this._log("_processInsert", "finish process insert [" + query + "]");
             if (result.length > 0) return result;
-            this._log("jQuery.dom.XmlGen._processInsert() : no results");
+            this._log("_processInsert", "no results");
             return false;
         },
 
         // attempt to extract the xml body value from an element
         _value: function(node) {
-            if (! node || node.nodeType != jQuery.dom.ELEMENT_NODE) return false;
+            if (! this._isElement(node)) return false;
             // value elements must not have children
             if (jQuery.dom.hasChildren(node)) return false;
-            if (node.value) return node.value
+            if (node[0].value) return node[0].value
             // return empty text nodes in firefox
-            if (node.nodeName.toLowerCase() == "textarea") return node.value
+            var nn = node[0].nodeName.toLowerCase();
+            if (nn == "textarea") return node[0].value
             // since this isn't an input, assume text body is content
-            return $(node).text();
+            return node.text();
+        },
+
+        // allow for overriding name attribute
+        _name: function(node) {
+            var name = node.attr(this._altNameAtt);
+            if (! name) name = node.attr(this._nameAtt);
+            return name ? name : node.attr(this._idAtt);
         },
 
         // convenience
         _log: function(method, msg) {
-            //$.log("jQuery.dom.XmlGen." + method + "() : " + msg);
+            if (this.log) $.log("jQuery.dom.XmlGen." + method + "() : " + msg);
         }
 
     }),
@@ -226,31 +241,25 @@ jQuery.fn.xmlGen = function() {
 
 }
 
-// convenience, convert XML document to string
+// convenience, produce strings for XML documents
 jQuery.fn.innerXML = function() {
-
     return this.pushStack(jQuery.map(this, function(elem) {
         return jQuery.dom.innerXML(elem);
     }));
-
 }
 
 // extract all children or current element on matches
 jQuery.fn.firstLevel = function(selector) {
-
     return this.pushStack(jQuery.map(this, function(elem) {
         return jQuery.firstLevel(elem, selector);
     }));
-
 };
 
 jQuery.firstLevel = function(elem, selector) {
-
     elem = $(elem);
     var _parent = elem.filter(selector)[0];
     if (_parent) return _parent;
     else return jQuery.map(elem.children(), function(kid) {
         return jQuery.firstLevel(kid, selector);
     });
-
 };
