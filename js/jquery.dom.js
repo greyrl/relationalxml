@@ -216,6 +216,25 @@ jQuery.dom = {
 
 }
 
+// convenience, produce documents for each selected item
+jQuery.fn.xmlGen = function() {
+
+    var xmlGen = new jQuery.dom.XmlGen();
+    return this.pushStack(jQuery.map(this, function(elem) {
+        return xmlGen.generate(elem);
+    }));
+
+}
+
+// convenience, convert XML document to string
+jQuery.fn.innerXML = function() {
+
+    return this.pushStack(jQuery.map(this, function(elem) {
+        return jQuery.dom.innerXML(elem);
+    }));
+
+}
+
 // extract all children or current element on matches
 jQuery.fn.firstLevel = function(selector) {
 
