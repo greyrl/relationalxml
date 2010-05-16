@@ -8,7 +8,7 @@ jQuery.dom = {
     XmlGen : Class.extend({
 
         doc: false,
-        log: true,
+        log: false,
 
         _altNameAtt: "altname",
         _attCls:  "att",
